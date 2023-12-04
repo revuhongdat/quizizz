@@ -25,7 +25,7 @@ public class User implements Serializable {
     private String name;
 
     @Column(unique = true, nullable = false)
-    private String email;
+    private String username;
 
     @Column(nullable = false)
     private String password;
@@ -50,4 +50,15 @@ public class User implements Serializable {
             joinColumns = {@JoinColumn(name = "id_user")},
             inverseJoinColumns = {@JoinColumn(name = "id_role")})
     private Set<Role> roles = new HashSet<>();
+
+    public User(String username, String password, String confirmPassword, Set<Role> roles) {
+        this.username = username;
+        this.password = password;
+        this.confirmPassword = confirmPassword;
+        this.roles = roles;
+    }
+
+    public User() {
+    }
+
 }
