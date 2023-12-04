@@ -9,19 +9,26 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class JwtSpring3Application implements CommandLineRunner {
+    private final RoleRepository roleRepository;
+
     @Autowired
-    private RoleRepository roleRepository;
+    public JwtSpring3Application(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(JwtSpring3Application.class, args);
     }
+
     @Override
     public void run(String... args) throws Exception {
         if (roleRepository.count() == 0) {
-            Role admin = new Role("ROLE_ADMIN");
-            Role user = new Role("ROLE_USER");
+            Role admin = new Role("ADMIN");
+            Role teacher = new Role("TEACHER");
+            Role student = new Role("STUDENT");
             roleRepository.save(admin);
-            roleRepository.save(user);
+            roleRepository.save(teacher);
+            roleRepository.save(student);
         }
     }
 }
