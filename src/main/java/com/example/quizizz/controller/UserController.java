@@ -72,16 +72,21 @@ public class UserController {
         if (!userService.isCorrectConfirmPassword(user)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if (user.getRoles() != null) {
+        if (user.getRoles().iterator().next().getId() == 1) {
             Role role = roleService.findByName("ADMIN");
             Set<Role> roles = new HashSet<>();
             roles.add(role);
             user.setRoles(roles);
-        } else {
-            Role role1 = roleService.findByName("USER");
-            Set<Role> roles1 = new HashSet<>();
-            roles1.add(role1);
-            user.setRoles(roles1);
+        } else if (user.getRoles().iterator().next().getId() == 2) {
+            Role role = roleService.findByName("TEACHER");
+            Set<Role> roles = new HashSet<>();
+            roles.add(role);
+            user.setRoles(roles);
+        } else if (user.getRoles().iterator().next().getId() == 3) {
+            Role role = roleService.findByName("STUDENT");
+            Set<Role> roles = new HashSet<>();
+            roles.add(role);
+            user.setRoles(roles);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setConfirmPassword(passwordEncoder.encode(user.getConfirmPassword()));
@@ -120,5 +125,17 @@ public class UserController {
         user.setConfirmPassword(userOptional.get().getConfirmPassword());
         userService.save(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/teacher")
+    public ResponseEntity<Iterable<User>> showAllTeacherByAdmin() {
+        Iterable<User> users = userService.findUsersByRoleName(1);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/students/{name}")
+    public ResponseEntity<Iterable<User>> showStudentByAdmin(@PathVariable String name) {
+        Iterable<User> users = userService.findUserByNameContains(name);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }

@@ -36,7 +36,6 @@ public class SecurityConfig {
         return new UserServiceImpl();
     }
 
-
     @Autowired
     private UserService userService;
 

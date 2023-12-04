@@ -1,6 +1,7 @@
 package com.example.quizizz.service.impl;
 
 
+import com.example.quizizz.model.Role;
 import com.example.quizizz.model.User;
 import com.example.quizizz.model.UserPrinciple;
 import com.example.quizizz.repository.UserRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -114,4 +116,16 @@ public class UserServiceImpl implements UserService {
     public boolean isCorrectConfirmPassword(User user) {
         return user.getPassword().equals(user.getConfirmPassword());
     }
+
+    @Override
+    public Iterable<User> findUserByNameContains(String name) {
+        return userRepository.findUserByNameContains(name);
+    }
+
+    @Override
+    public Iterable<User> findUsersByRoleName(int roleId) {
+        return userRepository.findUsersByRoleName(roleId);
+    }
+
+
 }
