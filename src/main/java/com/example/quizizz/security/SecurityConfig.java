@@ -80,8 +80,8 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/register", "/hello").permitAll()
-                        .requestMatchers("/admin/**", "/users/**").hasAnyAuthority("ROLE_ADMIN")
-                        .requestMatchers("/users/**").hasAnyAuthority("ROLE_USER")
+                        .requestMatchers("/admin/**", "/users/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/users/**").hasAnyAuthority("USER")
                 )
                 .exceptionHandling(customizer -> customizer.accessDeniedHandler(customAccessDeniedHandler()))
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

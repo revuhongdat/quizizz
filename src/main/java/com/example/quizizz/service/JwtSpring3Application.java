@@ -18,8 +18,8 @@ public class JwtSpring3Application implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if (roleRepository.count() == 0) {
-            Role admin = new Role("ROLE_ADMIN");
-            Role user = new Role("ROLE_USER");
+            Role admin = new Role("ADMIN");
+            Role user = new Role("USER");
             roleRepository.save(admin);
             roleRepository.save(user);
         }
