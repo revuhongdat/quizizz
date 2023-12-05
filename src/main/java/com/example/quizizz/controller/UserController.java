@@ -79,6 +79,7 @@ public class UserController {
             Role role = roleService.findByName("TEACHER");
             Set<Role> roles = new HashSet<>();
             user.setStatus(2);
+            user.setEnabled(false);
             roles.add(role);
             user.setRoles(roles);
         } else if (user.getRoles().iterator().next().getId() == 3) {
@@ -125,52 +126,71 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @GetMapping("/admin/teacher/active")
+    @GetMapping("/admin/teachers/active")
     public ResponseEntity<Iterable<User>> showAllTeacherActiveByAdmin() {
-        Iterable<User> users = userService.findUsersByRoleName(1, 1, true);
+        Iterable<User> users = userService.findUsersByRoleName(2, 1, true);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
-    @GetMapping("/admin/teacher/pending")
+
+    @GetMapping("/admin/teachers/pending")
     public ResponseEntity<Iterable<User>> showAllTeacherPendingByAdmin() {
-        Iterable<User> users = userService.findUsersByRoleName(1, 2, false);
+        Iterable<User> users = userService.findUsersByRoleName(2, 2, false);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
-    @GetMapping("/admin/teacher/active/{name}")
+
+    @GetMapping("/admin/teachers/active/{name}")
     public ResponseEntity<Iterable<User>> showTeacherActiveByAdmin(@PathVariable String name) {
         Iterable<User> users = userService.findUsersByRoleName(2, 1, true);
         return getIterableResponseEntity(name, users);
     }
-    @GetMapping("/admin/teacher/pending/{name}")
+
+    @GetMapping("/admin/teachers/pending/{name}")
     public ResponseEntity<Iterable<User>> showTeacherPendingByAdmin(@PathVariable String name) {
         Iterable<User> users = userService.findUsersByRoleName(2, 2, false);
         return getIterableResponseEntity(name, users);
     }
-    @GetMapping("/admin/teacher/active/sort")
+
+    @GetMapping("/admin/teachers/active/sort")
     public ResponseEntity<Iterable<User>> sortTeacherActiveByAdmin() {
-        Iterable<User> users = userService.SortByCreationTime(2,1, true);
-        return new ResponseEntity<>(users, HttpStatus.OK);
-    }
-    @GetMapping("/admin/teacher/pending/sort")
-    public ResponseEntity<Iterable<User>> sortTeacherPendingByAdmin() {
-        Iterable<User> users = userService.SortByCreationTime(2,2, false);
-        return new ResponseEntity<>(users, HttpStatus.OK);
-    }
-    @GetMapping("/admin/student")
-    public ResponseEntity<Iterable<User>> showAllStudentByAdmin() {
-        Iterable<User> users = userService.findUsersByRoleName(3,1, true);
+        Iterable<User> users = userService.SortByCreationTime(2, 1, true);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @GetMapping("/admin/student/{name}")
+    @GetMapping("/admin/teachers/pending/sort")
+    public ResponseEntity<Iterable<User>> sortTeacherPendingByAdmin() {
+        Iterable<User> users = userService.SortByCreationTime(2, 2, false);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/students")
+    public ResponseEntity<Iterable<User>> showAllStudentByAdmin() {
+        Iterable<User> users = userService.findUsersByRoleName(3, 1, true);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/students/{name}")
     public ResponseEntity<Iterable<User>> showStudentByAdmin(@PathVariable String name) {
-        Iterable<User> users = userService.findUsersByRoleName(3,1,true);
+        Iterable<User> users = userService.findUsersByRoleName(3, 1, true);
         return getIterableResponseEntity(name, users);
     }
 
-    @GetMapping("/admin/student/sort")
+    @GetMapping("/admin/students/sort")
     public ResponseEntity<Iterable<User>> sortStudentByAdmin() {
-        Iterable<User> users = userService.SortByCreationTime(3,1,true);
+        Iterable<User> users = userService.SortByCreationTime(3, 1, true);
         return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @PutMapping("admin/teachers/{id}")
+    public ResponseEntity<User> approveTeacherUser(@PathVariable Long id) {
+        Optional<User> userOptional = this.userService.findById(id);
+        if (userOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        userOptional.get().setStatus(1);
+        userOptional.get().setEnabled(true);
+        userService.save(userOptional.get());
+        return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
     }
 
     private ResponseEntity<Iterable<User>> getIterableResponseEntity(@PathVariable String name, Iterable<User> users) {

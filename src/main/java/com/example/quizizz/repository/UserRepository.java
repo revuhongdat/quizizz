@@ -16,10 +16,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Iterable<User> findUserByNameContains(String name);
 
     @Modifying
-    @Query(value = "select * from user join quiz.user_role ur on user.id = ur.id_user where id_role = :roleId and status = :statusId and  enabled = :enable", nativeQuery = true)
+    @Query(value = "select * from user join quiz.user_role ur on user.id = ur.id_user where id_role = :roleId and status = :status and  enabled = :enable", nativeQuery = true)
     Iterable<User> findUsersByRoleName(int roleId, int status, boolean enable);
 
     @Modifying
-    @Query(value = "select * from user join quiz.user_role ur on user.id = ur.id_user where id_role = :roleId and status = :statusId and  enabled = :bolean order by user.time_create", nativeQuery = true)
+    @Query(value = "select * from user join quiz.user_role ur on user.id = ur.id_user where id_role = :roleId and status = :status and  enabled = :enable order by user.time_create", nativeQuery = true)
     Iterable<User> SortByCreationTime(int roleId, int status, boolean enable);
 }
