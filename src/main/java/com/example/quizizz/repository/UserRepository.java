@@ -22,4 +22,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query(value = "select * from user join quiz.user_role ur on user.id = ur.id_user where id_role = :roleId and status = :status and  enabled = :enable order by user.time_create", nativeQuery = true)
     Iterable<User> SortByCreationTime(int roleId, int status, boolean enable);
+
 }
