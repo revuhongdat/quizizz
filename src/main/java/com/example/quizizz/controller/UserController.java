@@ -1,5 +1,6 @@
 package com.example.quizizz.controller;
 
+import com.example.quizizz.DTO.ChangePasswordRequest;
 import com.example.quizizz.model.JwtResponse;
 import com.example.quizizz.model.Role;
 import com.example.quizizz.model.User;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.*;
 
 @RestController
@@ -67,7 +69,7 @@ public class UserController {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
-        if (!userService.isCorrectConfirmPassword(user)) {
+        if (userService.isCorrectConfirmPassword(user)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         if (user.getRoles().iterator().next().getId() == 1) {
@@ -202,5 +204,22 @@ public class UserController {
             }
         }
         return new ResponseEntity<>(filteredUsers, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/admin/users/{id}")
+    public ResponseEntity<User> deleteUser(@PathVariable Long id) {
+        Optional<User> userOptional = this.userService.findById(id);
+        if (userOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        userOptional.get().setEnabled(false);
+        userService.save(userOptional.get());
+        return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
+    }
+
+    @PostMapping("users/changePassword")
+    public ResponseEntity<?> updatePassword(@RequestBody ChangePasswordRequest request, Principal connectedUser) throws IllegalAccessException {
+     userService.changePassword(request, connectedUser);
+     return  ResponseEntity.accepted().build();
     }
 }

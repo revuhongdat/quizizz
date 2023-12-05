@@ -36,8 +36,6 @@ public class SecurityConfig {
         return new UserServiceImpl();
     }
 
-    @Autowired
-    private UserService userService;
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -80,8 +78,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/register").permitAll()
                         .requestMatchers("/admin/**", "/teachers/**", "/students/**","/users/**" ).hasAnyAuthority("ADMIN")
-                        .requestMatchers("/teachers/**", "/students/**").hasAnyAuthority("TEACHER")
-                        .requestMatchers("/students/**").hasAnyAuthority("STUDENT")
+                        .requestMatchers("/teachers/**", "/students/**", "/users/**").hasAnyAuthority("TEACHER")
+                        .requestMatchers("/students/**", "/users/**").hasAnyAuthority("STUDENT")
                 )
                 .exceptionHandling(customizer -> customizer.accessDeniedHandler(customAccessDeniedHandler()))
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
