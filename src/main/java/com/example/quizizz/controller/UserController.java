@@ -19,9 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @CrossOrigin("*")
@@ -118,24 +116,57 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         user.setId(userOptional.get().getId());
-        user.setUsername(userOptional.get().getUsername());
-        user.setEnabled(userOptional.get().isEnabled());
-        user.setPassword(userOptional.get().getPassword());
+        user.setName(userOptional.get().getName());
+        user.setImage(userOptional.get().getImage());
         user.setRoles(userOptional.get().getRoles());
-        user.setConfirmPassword(userOptional.get().getConfirmPassword());
         userService.save(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("/admin/teacher")
     public ResponseEntity<Iterable<User>> showAllTeacherByAdmin() {
-        Iterable<User> users = userService.findUsersByRoleName(1);
+        Iterable<User> users = userService.findUsersByRoleName(2);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @GetMapping("/admin/students/{name}")
-    public ResponseEntity<Iterable<User>> showStudentByAdmin(@PathVariable String name) {
-        Iterable<User> users = userService.findUserByNameContains(name);
+    @GetMapping("/admin/teacher/{name}")
+    public ResponseEntity<Iterable<User>> showTeacherByAdmin(@PathVariable String name) {
+        Iterable<User> users = userService.findUsersByRoleName(2);
+        return getIterableResponseEntity(name, users);
+    }
+
+    @GetMapping("/admin/teacher/sort")
+    public ResponseEntity<Iterable<User>> sortTeacherByAdmin() {
+        Iterable<User> users = userService.SortByCreationTime(2);
         return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/student")
+    public ResponseEntity<Iterable<User>> showAllStudentByAdmin() {
+        Iterable<User> users = userService.findUsersByRoleName(2);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/student/{name}")
+    public ResponseEntity<Iterable<User>> showStudentByAdmin(@PathVariable String name) {
+        Iterable<User> users = userService.findUsersByRoleName(3);
+        return getIterableResponseEntity(name, users);
+    }
+
+    @GetMapping("/admin/student/sort")
+    public ResponseEntity<Iterable<User>> sortStudentByAdmin() {
+        Iterable<User> users = userService.SortByCreationTime(3);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    private ResponseEntity<Iterable<User>> getIterableResponseEntity(@PathVariable String name, Iterable<User> users) {
+        List<User> filteredUsers = new ArrayList<>();
+
+        for (User user : users) {
+            if (user.getName().contains(name)) {
+                filteredUsers.add(user);
+            }
+        }
+        return new ResponseEntity<>(filteredUsers, HttpStatus.OK);
     }
 }
