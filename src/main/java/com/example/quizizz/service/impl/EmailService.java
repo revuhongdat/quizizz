@@ -18,4 +18,12 @@ public class EmailService {
         mailMessage.setText(content);
         javaMailSender.send(mailMessage);
     }
+    public void sendEmailLockUser(String toEmail) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setFrom("datvh1996@gmail.com");
+        mailMessage.setTo(toEmail);
+        mailMessage.setSubject("Thông báo khóa tài khoản");
+        mailMessage.setText("Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên để mở khóa tài khoản");
+        javaMailSender.send(mailMessage);
+    }
 }

@@ -6,6 +6,7 @@ import com.example.quizizz.model.Role;
 import com.example.quizizz.model.User;
 import com.example.quizizz.service.RoleService;
 import com.example.quizizz.service.UserService;
+import com.example.quizizz.service.impl.EmailService;
 import com.example.quizizz.service.impl.JwtService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +37,16 @@ public class UserController {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final EmailService emailService;
+
     @Autowired
-    public UserController(AuthenticationManager authenticationManager, JwtService jwtService, UserService userService, RoleService roleService, PasswordEncoder passwordEncoder) {
+    public UserController(AuthenticationManager authenticationManager, JwtService jwtService, UserService userService, RoleService roleService, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.userService = userService;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
 
@@ -214,6 +218,7 @@ public class UserController {
         }
         userOptional.get().setEnabled(false);
         userService.save(userOptional.get());
+        emailService.sendEmailLockUser(userOptional.get().getUsername());
         return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
     }
 
