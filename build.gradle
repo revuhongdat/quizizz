@@ -36,6 +36,10 @@ dependencies {
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
     implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.2.0'
+    // Thêm Spring Mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    // Thêm Apache Commons Lang
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
 }
 
 tasks.named('bootBuildImage') {

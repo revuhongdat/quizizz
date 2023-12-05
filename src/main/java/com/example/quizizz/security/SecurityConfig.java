@@ -6,7 +6,6 @@ import com.example.quizizz.security.jwt.JwtAuthenticationFilter;
 import com.example.quizizz.security.jwt.RestAuthenticationEntryPoint;
 import com.example.quizizz.service.UserService;
 import com.example.quizizz.service.impl.UserServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -76,7 +75,7 @@ public class SecurityConfig {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register").permitAll()
+                        .requestMatchers("/login", "/register", "/forgot").permitAll()
                         .requestMatchers("/admin/**", "/teachers/**", "/students/**","/users/**" ).hasAnyAuthority("ADMIN")
                         .requestMatchers("/teachers/**", "/students/**", "/users/**").hasAnyAuthority("TEACHER")
                         .requestMatchers("/students/**", "/users/**").hasAnyAuthority("STUDENT")
