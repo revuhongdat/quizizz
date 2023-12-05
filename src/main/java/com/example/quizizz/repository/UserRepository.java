@@ -18,4 +18,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query(value = "select * from user join quiz.user_role ur on user.id = ur.id_user where id_role = :roleId", nativeQuery = true)
     Iterable<User> findUsersByRoleName(@Param("roleId") int roleId);
+
+    @Modifying
+    @Query(value = "select * from user join quiz.user_role ur on user.id = ur.id_user where id_role = :roleId order by user.time_create", nativeQuery = true)
+    Iterable<User> SortByCreationTime(@Param("roleId") int roleId);
 }
