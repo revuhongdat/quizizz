@@ -7,6 +7,7 @@ import com.example.quizizz.security.jwt.RestAuthenticationEntryPoint;
 import com.example.quizizz.service.UserService;
 import com.example.quizizz.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.server.servlet.OAuth2AuthorizationServerAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +25,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 
 @Configuration
@@ -78,15 +82,30 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register").permitAll()
-                        .requestMatchers("/admin/**", "/teachers/**", "/students/**","/users/**" ).hasAnyAuthority("ADMIN")
-                        .requestMatchers("/teachers/**", "/students/**").hasAnyAuthority("TEACHER")
-                        .requestMatchers("/students/**").hasAnyAuthority("STUDENT")
+                .authorizeHttpRequests(auth ->{
+                            auth.requestMatchers("/").permitAll();
+                            auth.anyRequest().authenticated();
+                            auth.requestMatchers("/admin/**", "/teachers/**", "/students/**","/users/**" ).hasAnyAuthority("ADMIN");
+                            auth.requestMatchers("/teachers/**", "/students/**").hasAnyAuthority("TEACHER");
+                            auth.requestMatchers("/students/**").hasAnyAuthority("STUDENT");
+                        }
+
+
+
+//                                .anyRequest().authenticated()
+//                        .requestMatchers("/login", "/register").permitAll()
+
+//                        .requestMatchers("/admin/**", "/teachers/**", "/students/**","/users/**" ).hasAnyAuthority("ADMIN")
+//                        .requestMatchers("/teachers/**", "/students/**").hasAnyAuthority("TEACHER")
+//                        .requestMatchers("/students/**").hasAnyAuthority("STUDENT")
+
                 )
+                .oauth2Login(withDefaults())
+                .formLogin(withDefaults())
                 .exceptionHandling(customizer -> customizer.accessDeniedHandler(customAccessDeniedHandler()))
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .httpBasic(Customizer.withDefaults())
+//                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .httpBasic(Customizer.withDefaults())
                 .build();
     }
+
 }
