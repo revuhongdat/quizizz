@@ -27,6 +27,6 @@ public interface UserService extends UserDetailsService {
 
     boolean isCorrectConfirmPassword(User user);
     Iterable<User> findUserByNameContains (String name);
-    Iterable<User> findUsersByRoleName(int roleId);
-    Iterable<User> SortByCreationTime(int roleId);
+    Iterable<User> findUsersByRoleName(int roleId, int status, boolean enable);
+    Iterable<User> SortByCreationTime(int roleId, int status, boolean enable);
 }
