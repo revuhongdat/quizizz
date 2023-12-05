@@ -78,11 +78,13 @@ public class UserController {
         } else if (user.getRoles().iterator().next().getId() == 2) {
             Role role = roleService.findByName("TEACHER");
             Set<Role> roles = new HashSet<>();
+            user.setStatus(2);
             roles.add(role);
             user.setRoles(roles);
         } else if (user.getRoles().iterator().next().getId() == 3) {
             Role role = roleService.findByName("STUDENT");
             Set<Role> roles = new HashSet<>();
+            user.setStatus(1);
             roles.add(role);
             user.setRoles(roles);
         }
@@ -123,39 +125,51 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @GetMapping("/admin/teacher")
-    public ResponseEntity<Iterable<User>> showAllTeacherByAdmin() {
-        Iterable<User> users = userService.findUsersByRoleName(2);
+    @GetMapping("/admin/teacher/active")
+    public ResponseEntity<Iterable<User>> showAllTeacherActiveByAdmin() {
+        Iterable<User> users = userService.findUsersByRoleName(1, 1, true);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
-
-    @GetMapping("/admin/teacher/{name}")
-    public ResponseEntity<Iterable<User>> showTeacherByAdmin(@PathVariable String name) {
-        Iterable<User> users = userService.findUsersByRoleName(2);
+    @GetMapping("/admin/teacher/pending")
+    public ResponseEntity<Iterable<User>> showAllTeacherPendingByAdmin() {
+        Iterable<User> users = userService.findUsersByRoleName(1, 2, false);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+    @GetMapping("/admin/teacher/active/{name}")
+    public ResponseEntity<Iterable<User>> showTeacherActiveByAdmin(@PathVariable String name) {
+        Iterable<User> users = userService.findUsersByRoleName(2, 1, true);
         return getIterableResponseEntity(name, users);
     }
-
-    @GetMapping("/admin/teacher/sort")
-    public ResponseEntity<Iterable<User>> sortTeacherByAdmin() {
-        Iterable<User> users = userService.SortByCreationTime(2);
+    @GetMapping("/admin/teacher/pending/{name}")
+    public ResponseEntity<Iterable<User>> showTeacherPendingByAdmin(@PathVariable String name) {
+        Iterable<User> users = userService.findUsersByRoleName(2, 2, false);
+        return getIterableResponseEntity(name, users);
+    }
+    @GetMapping("/admin/teacher/active/sort")
+    public ResponseEntity<Iterable<User>> sortTeacherActiveByAdmin() {
+        Iterable<User> users = userService.SortByCreationTime(2,1, true);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
-
+    @GetMapping("/admin/teacher/pending/sort")
+    public ResponseEntity<Iterable<User>> sortTeacherPendingByAdmin() {
+        Iterable<User> users = userService.SortByCreationTime(2,2, false);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
     @GetMapping("/admin/student")
     public ResponseEntity<Iterable<User>> showAllStudentByAdmin() {
-        Iterable<User> users = userService.findUsersByRoleName(2);
+        Iterable<User> users = userService.findUsersByRoleName(3,1, true);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping("/admin/student/{name}")
     public ResponseEntity<Iterable<User>> showStudentByAdmin(@PathVariable String name) {
-        Iterable<User> users = userService.findUsersByRoleName(3);
+        Iterable<User> users = userService.findUsersByRoleName(3,1,true);
         return getIterableResponseEntity(name, users);
     }
 
     @GetMapping("/admin/student/sort")
     public ResponseEntity<Iterable<User>> sortStudentByAdmin() {
-        Iterable<User> users = userService.SortByCreationTime(3);
+        Iterable<User> users = userService.SortByCreationTime(3,1,true);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 

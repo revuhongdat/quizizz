@@ -123,12 +123,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Iterable<User> findUsersByRoleName(int roleId) {
-        return userRepository.findUsersByRoleName(roleId);
+    public  Iterable<User> findUsersByRoleName(int roleId, int status, boolean enable) {
+        return userRepository.findUsersByRoleName(roleId, status, enable);
     }
 
     @Override
-    public Iterable<User> SortByCreationTime(int roleId) {
-        return userRepository.SortByCreationTime(roleId);
+    public Iterable<User> SortByCreationTime(int roleId, int status, boolean enable) {
+        return userRepository.SortByCreationTime(roleId, status, enable);
     }
 }
