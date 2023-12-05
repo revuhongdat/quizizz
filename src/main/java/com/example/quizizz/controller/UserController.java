@@ -1,5 +1,6 @@
 package com.example.quizizz.controller;
 
+import com.example.quizizz.DTO.ChangePasswordRequest;
 import com.example.quizizz.model.JwtResponse;
 import com.example.quizizz.model.Role;
 import com.example.quizizz.model.User;
@@ -19,9 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.security.Principal;
+import java.util.*;
 
 @RestController
 @CrossOrigin("*")
@@ -69,19 +69,27 @@ public class UserController {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
-        if (!userService.isCorrectConfirmPassword(user)) {
+        if (userService.isCorrectConfirmPassword(user)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if (user.getRoles() != null) {
+        if (user.getRoles().iterator().next().getId() == 1) {
             Role role = roleService.findByName("ADMIN");
             Set<Role> roles = new HashSet<>();
             roles.add(role);
             user.setRoles(roles);
-        } else {
-            Role role1 = roleService.findByName("USER");
-            Set<Role> roles1 = new HashSet<>();
-            roles1.add(role1);
-            user.setRoles(roles1);
+        } else if (user.getRoles().iterator().next().getId() == 2) {
+            Role role = roleService.findByName("TEACHER");
+            Set<Role> roles = new HashSet<>();
+            user.setStatus(2);
+            user.setEnabled(false);
+            roles.add(role);
+            user.setRoles(roles);
+        } else if (user.getRoles().iterator().next().getId() == 3) {
+            Role role = roleService.findByName("STUDENT");
+            Set<Role> roles = new HashSet<>();
+            user.setStatus(1);
+            roles.add(role);
+            user.setRoles(roles);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setConfirmPassword(passwordEncoder.encode(user.getConfirmPassword()));
@@ -113,12 +121,105 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         user.setId(userOptional.get().getId());
-        user.setUsername(userOptional.get().getUsername());
-        user.setEnabled(userOptional.get().isEnabled());
-        user.setPassword(userOptional.get().getPassword());
+        user.setName(userOptional.get().getName());
+        user.setImage(userOptional.get().getImage());
         user.setRoles(userOptional.get().getRoles());
-        user.setConfirmPassword(userOptional.get().getConfirmPassword());
         userService.save(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/teachers/active")
+    public ResponseEntity<Iterable<User>> showAllTeacherActiveByAdmin() {
+        Iterable<User> users = userService.findUsersByRoleName(2, 1, true);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/teachers/pending")
+    public ResponseEntity<Iterable<User>> showAllTeacherPendingByAdmin() {
+        Iterable<User> users = userService.findUsersByRoleName(2, 2, false);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/teachers/active/{name}")
+    public ResponseEntity<Iterable<User>> showTeacherActiveByAdmin(@PathVariable String name) {
+        Iterable<User> users = userService.findUsersByRoleName(2, 1, true);
+        return getIterableResponseEntity(name, users);
+    }
+
+    @GetMapping("/admin/teachers/pending/{name}")
+    public ResponseEntity<Iterable<User>> showTeacherPendingByAdmin(@PathVariable String name) {
+        Iterable<User> users = userService.findUsersByRoleName(2, 2, false);
+        return getIterableResponseEntity(name, users);
+    }
+
+    @GetMapping("/admin/teachers/active/sort")
+    public ResponseEntity<Iterable<User>> sortTeacherActiveByAdmin() {
+        Iterable<User> users = userService.SortByCreationTime(2, 1, true);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/teachers/pending/sort")
+    public ResponseEntity<Iterable<User>> sortTeacherPendingByAdmin() {
+        Iterable<User> users = userService.SortByCreationTime(2, 2, false);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/students")
+    public ResponseEntity<Iterable<User>> showAllStudentByAdmin() {
+        Iterable<User> users = userService.findUsersByRoleName(3, 1, true);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/students/{name}")
+    public ResponseEntity<Iterable<User>> showStudentByAdmin(@PathVariable String name) {
+        Iterable<User> users = userService.findUsersByRoleName(3, 1, true);
+        return getIterableResponseEntity(name, users);
+    }
+
+    @GetMapping("/admin/students/sort")
+    public ResponseEntity<Iterable<User>> sortStudentByAdmin() {
+        Iterable<User> users = userService.SortByCreationTime(3, 1, true);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @PutMapping("admin/teachers/{id}")
+    public ResponseEntity<User> approveTeacherUser(@PathVariable Long id) {
+        Optional<User> userOptional = this.userService.findById(id);
+        if (userOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        userOptional.get().setStatus(1);
+        userOptional.get().setEnabled(true);
+        userService.save(userOptional.get());
+        return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
+    }
+
+    private ResponseEntity<Iterable<User>> getIterableResponseEntity(@PathVariable String name, Iterable<User> users) {
+        List<User> filteredUsers = new ArrayList<>();
+
+        for (User user : users) {
+            if (user.getName().contains(name)) {
+                filteredUsers.add(user);
+            }
+        }
+        return new ResponseEntity<>(filteredUsers, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/admin/users/{id}")
+    public ResponseEntity<User> deleteUser(@PathVariable Long id) {
+        Optional<User> userOptional = this.userService.findById(id);
+        if (userOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        userOptional.get().setEnabled(false);
+        userService.save(userOptional.get());
+        return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
+    }
+
+    @PostMapping("users/changePassword")
+    public ResponseEntity<?> updatePassword(@RequestBody ChangePasswordRequest request, Principal connectedUser) throws IllegalAccessException {
+     userService.changePassword(request, connectedUser);
+     return  ResponseEntity.accepted().build();
     }
 }
