@@ -171,7 +171,7 @@ public class UserController {
         List<User> filteredUsername = new ArrayList<>();
 
         for (User user : users) {
-            if (user.getName().contains(username)) {
+            if (user.getUsername().contains(username)) {
                 filteredUsername.add(user);
             }
         }
@@ -186,7 +186,7 @@ public class UserController {
         List<User> filteredUsername = new ArrayList<>();
 
         for (User user : users) {
-            if (user.getName().contains(username)) {
+            if (user.getUsername().contains(username)) {
                 filteredUsername.add(user);
             }
         }
@@ -220,11 +220,11 @@ public class UserController {
 
     @GetMapping("/admin/students/searchUsername/{username}")
     public ResponseEntity<Iterable<User>> searchStudentByUsername(@PathVariable String username) {
-        Iterable<User> users = userService.findUsersByRoleName(3, 2, false);
+        Iterable<User> users = userService.findUsersByRoleName(3, 1, true);
         List<User> filteredUsername = new ArrayList<>();
 
         for (User user : users) {
-            if (user.getName().contains(username)) {
+            if (user.getUsername().contains(username)) {
                 filteredUsername.add(user);
             }
         }
