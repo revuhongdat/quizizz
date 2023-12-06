@@ -215,7 +215,7 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @PutMapping("admin/teachers/{id}")
+    @PutMapping("/admin/teachers/{id}")
     public ResponseEntity<User> approveTeacherUser(@PathVariable Long id) {
         Optional<User> userOptional = this.userService.findById(id);
         if (userOptional.isEmpty()) {
