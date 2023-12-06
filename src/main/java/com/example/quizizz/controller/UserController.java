@@ -150,16 +150,32 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @GetMapping("/admin/teachers/active/{name}")
-    public ResponseEntity<Iterable<User>> showTeacherActiveByAdmin(@PathVariable String name) {
-        Iterable<User> users = userService.findUsersByRoleName(2, 1, true);
-        return getIterableResponseEntity(name, users);
+    @GetMapping("/admin/teachers/active/search/{name}")
+    public ResponseEntity<Iterable<User>> searchTeacherActiveByName(@PathVariable String name) {
+        Iterable<User> users = userService.findAllByNameContainsAndStatusAndEnabled(name, 1, true);
+
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @GetMapping("/admin/teachers/pending/{name}")
-    public ResponseEntity<Iterable<User>> showTeacherPendingByAdmin(@PathVariable String name) {
-        Iterable<User> users = userService.findUsersByRoleName(2, 2, false);
-        return getIterableResponseEntity(name, users);
+    @GetMapping("/admin/teachers/pending/search/{name}")
+    public ResponseEntity<Iterable<User>> searchTeacherPendingByName(@PathVariable String name) {
+        Iterable<User> users = userService.findAllByNameContainsAndStatusAndEnabled(name, 2, false);
+
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/teachers/active/searchUsername/{username}")
+    public ResponseEntity<Iterable<User>> searchTeacherActiveByUsername(@PathVariable String username) {
+        Iterable<User> users = userService.findAllByUsernameContainingAndStatusAndEnabled(username, 2, true);
+
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/teachers/pending/searchUsername/{username}")
+    public ResponseEntity<Iterable<User>> searchTeacherPendingByUsername(@PathVariable String username) {
+        Iterable<User> users = userService.findAllByUsernameContainingAndStatusAndEnabled(username, 2, false);
+
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping("/admin/teachers/active/sort")
@@ -180,10 +196,17 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @GetMapping("/admin/students/{name}")
-    public ResponseEntity<Iterable<User>> showStudentByAdmin(@PathVariable String name) {
-        Iterable<User> users = userService.findUsersByRoleName(3, 1, true);
-        return getIterableResponseEntity(name, users);
+    @GetMapping("/admin/students/search/{name}")
+    public ResponseEntity<Iterable<User>> searchStudentByName(@PathVariable String name) {
+        Iterable<User> users = userService.findAllByNameContainsAndStatusAndEnabled(name, 1, true);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/students/searchUsername/{username}")
+    public ResponseEntity<Iterable<User>> searchStudentByUsername(@PathVariable String username) {
+        Iterable<User> users = userService.findAllByUsernameContainingAndStatusAndEnabled(username, 2, false);
+
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping("/admin/students/sort")
@@ -203,17 +226,6 @@ public class UserController {
         userOptional.get().setEnabled(true);
         userService.save(userOptional.get());
         return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
-    }
-
-    private ResponseEntity<Iterable<User>> getIterableResponseEntity(@PathVariable String name, Iterable<User> users) {
-        List<User> filteredUsers = new ArrayList<>();
-
-        for (User user : users) {
-            if (user.getName().contains(name)) {
-                filteredUsers.add(user);
-            }
-        }
-        return new ResponseEntity<>(filteredUsers, HttpStatus.OK);
     }
 
     @DeleteMapping("/admin/users/{id}")
