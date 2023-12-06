@@ -71,28 +71,42 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder(10);
     }
 
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        return http.csrf(AbstractHttpConfigurer::disable)
+//                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+//                .authorizeHttpRequests((auth) -> {
+//                            auth.requestMatchers("/login", "/register", "/logout").permitAll();
+//                            auth.requestMatchers("/admin/**", "/teachers/**", "/students/**", "/users/**").hasAnyAuthority("ADMIN");
+//                            auth.requestMatchers("/teachers/**", "/students/**").hasAnyAuthority("TEACHER");
+//                            auth.requestMatchers("/students/**").hasAnyAuthority("STUDENT");
+//                            auth.anyRequest().authenticated();
+//                        }
+//                )
+//                .logout(l -> l
+//                        .logoutUrl("/logout")
+//                        .logoutSuccessUrl("/hello")
+//                        .invalidateHttpSession(true)
+//                        .deleteCookies("JSESSIONID"))
+//                .oauth2Login(withDefaults())
+//
+//                .exceptionHandling(customizer -> customizer.accessDeniedHandler(customAccessDeniedHandler()))
+//                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+//                .build();
+//    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf(AbstractHttpConfigurer::disable)
+        return http.csrf(csrf -> csrf.disable())
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests((auth) -> {
-                            auth.requestMatchers("/login", "/register", "/logout").permitAll();
-                            auth.requestMatchers("/admin/**", "/teachers/**", "/students/**", "/users/**").hasAnyAuthority("ADMIN");
-                            auth.requestMatchers("/teachers/**", "/students/**").hasAnyAuthority("TEACHER");
-                            auth.requestMatchers("/students/**").hasAnyAuthority("STUDENT");
-                            auth.anyRequest().authenticated();
-                        }
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/login", "/register", "/hello", "/**").permitAll()
+                        .requestMatchers("/users/**").hasAnyAuthority("ROLE_USER")
+                        .requestMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN")
                 )
-                .logout(l -> l
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/hello")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID"))
-                .oauth2Login(withDefaults())
-
                 .exceptionHandling(customizer -> customizer.accessDeniedHandler(customAccessDeniedHandler()))
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .httpBasic(Customizer.withDefaults())
                 .build();
     }
 }
