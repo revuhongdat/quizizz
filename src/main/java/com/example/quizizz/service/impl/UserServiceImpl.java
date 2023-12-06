@@ -2,6 +2,9 @@ package com.example.quizizz.service.impl;
 
 
 import com.example.quizizz.DTO.ChangePasswordRequest;
+import com.example.quizizz.Exception.Constant;
+import com.example.quizizz.Exception.ResourceNotFoundException;
+import com.example.quizizz.Exception.ResponseCode;
 import com.example.quizizz.model.User;
 import com.example.quizizz.model.UserPrinciple;
 import com.example.quizizz.repository.UserRepository;
@@ -11,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,10 +31,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String email) {
-        User user = userRepository.findByUsername(email);
+    public UserDetails loadUserByUsername(String username) {
+        User user = userRepository.findByUsername(username);
         if (user == null) {
-            throw new UsernameNotFoundException(email);
+            throw new UsernameNotFoundException(username);
         }
         if (this.checkLogin(user)) {
             return UserPrinciple.build(user);
@@ -138,8 +142,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changePassword(ChangePasswordRequest request, Principal connectedUser) throws IllegalAccessException {
-        var r = request.getCurrentPassword();
-        var u = connectedUser.getName() ;
         var userPrinciple = (UserPrinciple) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
         var user = findByUsername(userPrinciple.getUsername());
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
@@ -153,4 +155,31 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Override
+    public User findByResetPasswordToken(String token) {
+        return userRepository.findByResetPasswordToken(token);
+    }
+
+    @Override
+    public ResourceNotFoundException updateResetPasswordToken(String token, String email) {
+        User user = userRepository.findByUsername(email);
+
+        user.setResetPasswordToken(token);
+        userRepository.save(user);
+        return new ResourceNotFoundException(ResponseCode.CODE_200, Constant.RESTPASWORD_SUCCESS, email);
+    }
+
+    @Override
+    public void updatePassword(String token, String newPassword) {
+        User user = userRepository.findByResetPasswordToken(token);
+        if (user == null) {
+            throw new RuntimeException("User not found.");
+        }
+
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedPassword);
+        user.setResetPasswordToken(null);
+        userRepository.save(user);
+    }
 }
+

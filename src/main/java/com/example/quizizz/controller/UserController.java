@@ -45,7 +45,6 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-
     @GetMapping("/users")
     public ResponseEntity<Iterable<User>> showAllUser() {
         Iterable<User> users = userService.findAll();
@@ -219,7 +218,7 @@ public class UserController {
 
     @PostMapping("users/changePassword")
     public ResponseEntity<?> updatePassword(@RequestBody ChangePasswordRequest request, Principal connectedUser) throws IllegalAccessException {
-     userService.changePassword(request, connectedUser);
-     return  ResponseEntity.accepted().build();
+        userService.changePassword(request, connectedUser);
+        return ResponseEntity.accepted().build();
     }
 }

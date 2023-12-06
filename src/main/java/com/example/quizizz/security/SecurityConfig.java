@@ -6,15 +6,12 @@ import com.example.quizizz.security.jwt.JwtAuthenticationFilter;
 import com.example.quizizz.security.jwt.RestAuthenticationEntryPoint;
 import com.example.quizizz.service.UserService;
 import com.example.quizizz.service.impl.UserServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.server.servlet.OAuth2AuthorizationServerAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.BeanIds;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,7 +22,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -79,29 +75,24 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests(auth ->{
-                            auth.requestMatchers("/").permitAll();
-                            auth.anyRequest().authenticated();
-                            auth.requestMatchers("/admin/**", "/teachers/**", "/students/**","/users/**" ).hasAnyAuthority("ADMIN");
+                .authorizeHttpRequests((auth) -> {
+                            auth.requestMatchers("/login", "/register", "/logout").permitAll();
+                            auth.requestMatchers("/admin/**", "/teachers/**", "/students/**", "/users/**").hasAnyAuthority("ADMIN");
                             auth.requestMatchers("/teachers/**", "/students/**").hasAnyAuthority("TEACHER");
                             auth.requestMatchers("/students/**").hasAnyAuthority("STUDENT");
+                            auth.anyRequest().authenticated();
                         }
-
-
-
-//                                .anyRequest().authenticated()
-//                        .requestMatchers("/login", "/register").permitAll()
-
-//                        .requestMatchers("/admin/**", "/teachers/**", "/students/**","/users/**" ).hasAnyAuthority("ADMIN")
-//                        .requestMatchers("/teachers/**", "/students/**").hasAnyAuthority("TEACHER")
-//                        .requestMatchers("/students/**").hasAnyAuthority("STUDENT")
-
                 )
-                .oauth2Login(withDefaults())
-                .formLogin(withDefaults())
+                .logout(l -> l
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/hello")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID"))
+                .oauth2Login(withDefaults()
+                )
+
                 .exceptionHandling(customizer -> customizer.accessDeniedHandler(customAccessDeniedHandler()))
-//                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .httpBasic(Customizer.withDefaults())
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .build();
     }
 

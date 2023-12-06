@@ -1,6 +1,7 @@
 package com.example.quizizz.service;
 
 import com.example.quizizz.DTO.ChangePasswordRequest;
+import com.example.quizizz.Exception.ResourceNotFoundException;
 import com.example.quizizz.model.User;
 
 
@@ -37,4 +38,11 @@ public interface UserService extends UserDetailsService {
 
 
     void changePassword(ChangePasswordRequest request, Principal connectedUser) throws IllegalAccessException;
+
+    User findByResetPasswordToken(String token);
+
+    ResourceNotFoundException updateResetPasswordToken(String token, String email);
+
+    void updatePassword(String token, String newPassword);
+
 }
