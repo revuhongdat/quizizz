@@ -109,7 +109,13 @@ public class UserController {
         String jwt = jwtService.generateTokenLogin(authentication);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         User currentUser = userService.findByUsername(user.getUsername());
-        return ResponseEntity.ok(new JwtResponse(jwt, currentUser.getId(), userDetails.getUsername(), userDetails.getAuthorities()));
+        return ResponseEntity.ok(new JwtResponse(
+                jwt,
+                currentUser.getId(),
+                userDetails.getUsername(),
+                currentUser.getName(),
+                currentUser.getImage(),
+                userDetails.getAuthorities()));
     }
 
     @GetMapping("/users/{id}")
@@ -224,7 +230,7 @@ public class UserController {
 
     @PostMapping("users/changePassword")
     public ResponseEntity<?> updatePassword(@RequestBody ChangePasswordRequest request, Principal connectedUser) throws IllegalAccessException {
-     userService.changePassword(request, connectedUser);
-     return  ResponseEntity.accepted().build();
+        userService.changePassword(request, connectedUser);
+        return ResponseEntity.accepted().build();
     }
 }
