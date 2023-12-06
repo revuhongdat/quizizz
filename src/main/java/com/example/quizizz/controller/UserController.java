@@ -130,12 +130,11 @@ public class UserController {
         if (userOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        user.setId(userOptional.get().getId());
-        user.setName(userOptional.get().getName());
-        user.setImage(userOptional.get().getImage());
-        user.setRoles(userOptional.get().getRoles());
-        userService.save(user);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        userOptional.get().setName(user.getName());
+        userOptional.get().setImage(user.getImage());
+        userOptional.get().setRoles(user.getRoles());
+        userService.save(userOptional.get());
+        return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
     }
 
     @GetMapping("/admin/teachers/active")
