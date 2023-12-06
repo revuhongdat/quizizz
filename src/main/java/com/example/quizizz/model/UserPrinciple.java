@@ -22,15 +22,22 @@ public class UserPrinciple implements UserDetails {
     private final String username;
 
     private final String password;
-
+    private String name;
+    private String image;
     private final Collection<? extends GrantedAuthority> roles;
 
 
-
-    public UserPrinciple(Long id, String username, String password, Collection<? extends GrantedAuthority> roles) {
+    public UserPrinciple(Long id,
+                         String username,
+                         String password,
+                         String name,
+                         String image,
+                         Collection<? extends GrantedAuthority> roles) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.name = name;
+        this.image = image;
         this.roles = roles;
     }
 
@@ -40,8 +47,26 @@ public class UserPrinciple implements UserDetails {
                 user.getId(),
                 user.getUsername(),
                 user.getPassword(),
+                user.getName(),
+                user.getImage(),
                 authorities
         );
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     @Override
