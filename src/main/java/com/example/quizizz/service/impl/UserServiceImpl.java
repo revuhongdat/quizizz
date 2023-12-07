@@ -122,16 +122,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Iterable<User> findAllByUsernameContainingAndStatusAndEnabled(String username, int status, boolean enabled) {
-        return userRepository.findAllByUsernameContainingAndStatusAndEnabled(username, status, enabled);
+    public Iterable<User> findUserByNameContains(String name) {
+        return userRepository.findUserByNameContains(name);
     }
-
-
-    @Override
-    public Iterable<User> findAllByNameContainsAndStatusAndEnabled(String name, int status, boolean enable) {
-        return userRepository.findAllByNameContainsAndStatusAndEnabled(name, status, enable);
-    }
-
 
     @Override
     public Iterable<User> findUsersByRoleName(int roleId, int status, boolean enable) {
@@ -145,6 +138,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changePassword(ChangePasswordRequest request, Principal connectedUser) throws IllegalAccessException {
+        var r = request.getCurrentPassword();
+        var u = connectedUser.getName() ;
         var userPrinciple = (UserPrinciple) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
         var user = findByUsername(userPrinciple.getUsername());
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {

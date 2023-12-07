@@ -95,6 +95,7 @@ public class UserController {
             roles.add(role);
             user.setRoles(roles);
         }
+//        user.setImage();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setConfirmPassword(passwordEncoder.encode(user.getConfirmPassword()));
         userService.save(user);
@@ -130,6 +131,7 @@ public class UserController {
         if (userOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        userOptional.get().setId(user.getId());
         userOptional.get().setName(user.getName());
         userOptional.get().setImage(user.getImage());
         userOptional.get().setRoles(user.getRoles());
@@ -151,30 +153,45 @@ public class UserController {
 
     @GetMapping("/admin/teachers/active/search/{name}")
     public ResponseEntity<Iterable<User>> searchTeacherActiveByName(@PathVariable String name) {
-        Iterable<User> users = userService.findAllByNameContainsAndStatusAndEnabled(name, 1, true);
+        Iterable<User> users = userService.findUsersByRoleName(2, 1, true);
 
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return this.getIterableResponseEntity(name, users);
     }
 
     @GetMapping("/admin/teachers/pending/search/{name}")
     public ResponseEntity<Iterable<User>> searchTeacherPendingByName(@PathVariable String name) {
-        Iterable<User> users = userService.findAllByNameContainsAndStatusAndEnabled(name, 2, false);
+        Iterable<User> users = userService.findUsersByRoleName(2, 2, false);
 
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return this.getIterableResponseEntity(name, users);
     }
 
     @GetMapping("/admin/teachers/active/searchUsername/{username}")
     public ResponseEntity<Iterable<User>> searchTeacherActiveByUsername(@PathVariable String username) {
-        Iterable<User> users = userService.findAllByUsernameContainingAndStatusAndEnabled(username, 2, true);
+        Iterable<User> users = userService.findUsersByRoleName(2, 1, true);
+        List<User> filteredUsername = new ArrayList<>();
 
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        for (User user : users) {
+            if (user.getUsername().contains(username)) {
+                filteredUsername.add(user);
+            }
+        }
+
+        return new ResponseEntity<>(filteredUsername, HttpStatus.OK);
     }
 
     @GetMapping("/admin/teachers/pending/searchUsername/{username}")
     public ResponseEntity<Iterable<User>> searchTeacherPendingByUsername(@PathVariable String username) {
-        Iterable<User> users = userService.findAllByUsernameContainingAndStatusAndEnabled(username, 2, false);
+        Iterable<User> users = userService.findUsersByRoleName(2, 2, false);
 
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        List<User> filteredUsername = new ArrayList<>();
+
+        for (User user : users) {
+            if (user.getUsername().contains(username)) {
+                filteredUsername.add(user);
+            }
+        }
+
+        return new ResponseEntity<>(filteredUsername, HttpStatus.OK);
     }
 
     @GetMapping("/admin/teachers/active/sort")
@@ -191,21 +208,28 @@ public class UserController {
 
     @GetMapping("/admin/students")
     public ResponseEntity<Iterable<User>> showAllStudentByAdmin() {
-        Iterable<User> users = userService.findUsersByRoleName(3, 1, true);
+        Iterable<User> users = this.userService.findUsersByRoleName(3, 1, true);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping("/admin/students/search/{name}")
     public ResponseEntity<Iterable<User>> searchStudentByName(@PathVariable String name) {
-        Iterable<User> users = userService.findAllByNameContainsAndStatusAndEnabled(name, 1, true);
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        Iterable<User> users = userService.findUsersByRoleName(3, 1, true);
+        return this.getIterableResponseEntity(name, users);
     }
 
     @GetMapping("/admin/students/searchUsername/{username}")
     public ResponseEntity<Iterable<User>> searchStudentByUsername(@PathVariable String username) {
-        Iterable<User> users = userService.findAllByUsernameContainingAndStatusAndEnabled(username, 2, false);
+        Iterable<User> users = userService.findUsersByRoleName(3, 1, true);
+        List<User> filteredUsername = new ArrayList<>();
 
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        for (User user : users) {
+            if (user.getUsername().contains(username)) {
+                filteredUsername.add(user);
+            }
+        }
+
+        return new ResponseEntity<>(filteredUsername, HttpStatus.OK);
     }
 
     @GetMapping("/admin/students/sort")
@@ -220,7 +244,7 @@ public class UserController {
         if (userOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        emailService.sendEmailApproved(userOptional.get().getUsername());
+
         userOptional.get().setStatus(1);
         userOptional.get().setEnabled(true);
         userService.save(userOptional.get());
@@ -239,9 +263,23 @@ public class UserController {
         return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
     }
 
-    @PostMapping("users/changePassword")
+    @PostMapping("/users/changePassword")
     public ResponseEntity<?> updatePassword(@RequestBody ChangePasswordRequest request, Principal connectedUser) throws IllegalAccessException {
         userService.changePassword(request, connectedUser);
         return ResponseEntity.accepted().build();
+
     }
+
+    private ResponseEntity<Iterable<User>> getIterableResponseEntity(@PathVariable String name, Iterable<User> users) {
+        List<User> filteredUsers = new ArrayList<>();
+
+        for (User user : users) {
+            if (user.getName().contains(name)) {
+                filteredUsers.add(user);
+            }
+        }
+
+        return new ResponseEntity<>(filteredUsers, HttpStatus.OK);
+    }
+
 }

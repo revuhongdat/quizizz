@@ -28,9 +28,8 @@ public interface UserService extends UserDetailsService {
     boolean isRegister(User user);
 
     boolean isCorrectConfirmPassword(User user);
-    Iterable<User> findAllByUsernameContainingAndStatusAndEnabled (String username, int status, boolean enabled);
 
-    Iterable<User> findAllByNameContainsAndStatusAndEnabled(String name, int status, boolean enable);
+    Iterable<User> findUserByNameContains(String name);
 
     Iterable<User> findUsersByRoleName(int roleId, int status, boolean enable);
 
@@ -38,5 +37,4 @@ public interface UserService extends UserDetailsService {
 
 
     void changePassword(ChangePasswordRequest request, Principal connectedUser) throws IllegalAccessException;
-
 }
