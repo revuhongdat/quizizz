@@ -10,10 +10,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    User findByUsername (String username);
-    Iterable<User> findAllByUsernameContainingAndStatusAndEnabled (String username, int status, boolean enabled);
-    Iterable<User> findAllByNameContainsAndStatusAndEnabled(String name, int status, boolean enable);
-    Iterable<User> findAllByNameContains (String name);
+    User findByUsername(String username);
+
+    Iterable<User> findUserByNameContains(String name);
+
     @Modifying
     @Query(value = "select * from user join quiz.user_role ur on user.id = ur.id_user where id_role = :roleId and status = :status and  enabled = :enable", nativeQuery = true)
     Iterable<User> findUsersByRoleName(int roleId, int status, boolean enable);
