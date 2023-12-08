@@ -282,4 +282,12 @@ public class UserController {
         return new ResponseEntity<>(filteredUsers, HttpStatus.OK);
     }
 
+    @GetMapping("/users/fbu/{email}")
+    public ResponseEntity<?> findByUsername(@PathVariable String email) {
+        User user = userService.findByUsername(email);
+        if (user != null) {
+            return new ResponseEntity<>("OK",HttpStatus.OK);
+        }
+        return new ResponseEntity<>("NOT FOUND",HttpStatus.NOT_FOUND);
+    }
 }

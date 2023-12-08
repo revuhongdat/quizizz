@@ -20,8 +20,8 @@ public class EmailController {
     EmailService emailService;
     @Autowired
     PasswordEncoder passwordEncoder;
-    @PostMapping("/forgot")
-    public ResponseEntity<?> requestPasswordReset(@RequestBody String email) {
+    @GetMapping ("/forgot/{email}")
+    public ResponseEntity<?> requestPasswordReset(@PathVariable String email) {
         User user = userService.findByUsername(email);
         if (user == null) {
             return new ResponseEntity<>("Tài khoản không tồn tại", HttpStatus.NOT_FOUND);

@@ -6,7 +6,6 @@ import com.example.quizizz.security.jwt.JwtAuthenticationFilter;
 import com.example.quizizz.security.jwt.RestAuthenticationEntryPoint;
 import com.example.quizizz.service.UserService;
 import com.example.quizizz.service.impl.UserServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,14 +17,11 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -71,36 +67,13 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder(10);
     }
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        return http.csrf(AbstractHttpConfigurer::disable)
-//                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-//                .authorizeHttpRequests((auth) -> {
-//                            auth.requestMatchers("/login", "/register", "/logout").permitAll();
-//                            auth.requestMatchers("/admin/**", "/teachers/**", "/students/**", "/users/**").hasAnyAuthority("ADMIN");
-//                            auth.requestMatchers("/teachers/**", "/students/**").hasAnyAuthority("TEACHER");
-//                            auth.requestMatchers("/students/**").hasAnyAuthority("STUDENT");
-//                            auth.anyRequest().authenticated();
-//                        }
-//                )
-//                .logout(l -> l
-//                        .logoutUrl("/logout")
-//                        .logoutSuccessUrl("/hello")
-//                        .invalidateHttpSession(true)
-//                        .deleteCookies("JSESSIONID"))
-//                .oauth2Login(withDefaults())
-//
-//                .exceptionHandling(customizer -> customizer.accessDeniedHandler(customAccessDeniedHandler()))
-//                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-//                .build();
-//    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(csrf -> csrf.disable())
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register", "/hello", "/**").permitAll()
+                                .requestMatchers("/login", "/register", "/hello", "/**", "/users/**").permitAll()
 //                        .requestMatchers("/users/**").hasAnyAuthority("ROLE_USER")
 //                        .requestMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN")
                 )
