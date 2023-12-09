@@ -37,7 +37,7 @@ public class CategoryQuizController {
         }
         Iterable<CategoryQuiz> categoryQuizzes = categoryQuizService.findAll();
         for (CategoryQuiz currentCateQuiz : categoryQuizzes) {
-            if (currentCateQuiz.getName().equals(categoryQuiz.getName())) {
+            if (currentCateQuiz.getName().equals(categoryQuiz.getName().toUpperCase())) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }

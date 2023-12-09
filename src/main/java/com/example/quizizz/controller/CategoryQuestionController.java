@@ -60,7 +60,7 @@ public class CategoryQuestionController {
         }
         Iterable<CategoryQuestion> categoryQuestions = categoryQuestionService.findAll();
         for (CategoryQuestion categoryQuestion1 : categoryQuestions) {
-            if (categoryQuestion1.getName().equals(categoryQuestion.getName())) {
+            if (categoryQuestion1.getName().equals(categoryQuestion.getName().toUpperCase())) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
