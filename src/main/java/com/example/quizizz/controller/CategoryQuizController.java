@@ -1,6 +1,7 @@
 package com.example.quizizz.controller;
 
 import com.example.quizizz.model.CategoryQuiz;
+import com.example.quizizz.model.User;
 import com.example.quizizz.service.CategoryQuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,5 +45,20 @@ public class CategoryQuizController {
         categoryQuiz.setName(categoryQuiz.getName().replaceFirst("^.", String.valueOf(categoryQuiz.getName().charAt(0)).toUpperCase()));
         categoryQuizService.save(categoryQuiz);
         return new ResponseEntity<>(categoryQuiz, HttpStatus.CREATED);
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoryQuiz> updateCategoryQuiz(@PathVariable Long id, @RequestBody CategoryQuiz categoryQuiz) {
+        Optional<CategoryQuiz> categoryQuizOptional = this.categoryQuizService.findById(id);
+        if (categoryQuizOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Optional<CategoryQuiz> categoryQuizServiceByName = this.categoryQuizService.findCategoryQuizByName(categoryQuiz.getName());
+        if (!categoryQuizServiceByName.isPresent()) {
+            categoryQuizOptional.get().setName(categoryQuiz.getName().substring(0,1).toUpperCase() + categoryQuiz.getName().substring(1));
+            categoryQuizOptional.get().setDescription(categoryQuiz.getDescription());
+            categoryQuizService.save(categoryQuizOptional.get());
+            return new ResponseEntity<>(categoryQuizOptional.get(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }
