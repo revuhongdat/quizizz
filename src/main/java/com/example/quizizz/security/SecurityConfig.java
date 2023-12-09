@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.BeanIds;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -70,27 +71,43 @@ public class SecurityConfig {
     }
 
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf(AbstractHttpConfigurer::disable)
-                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests((auth) -> {
-                            auth.requestMatchers("/login", "/register", "/logout").permitAll();
-                            auth.requestMatchers("/admin/**", "/teachers/**", "/students/**", "/users/**").hasAnyAuthority("ADMIN");
-                            auth.requestMatchers("/teachers/**", "/students/**").hasAnyAuthority("TEACHER");
-                            auth.requestMatchers("/students/**").hasAnyAuthority("STUDENT");
-                            auth.anyRequest().authenticated();
-                        }
-                )
-                .logout(l -> l
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/hello")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID"))
-                .oauth2Login(withDefaults())
-
-                .exceptionHandling(customizer -> customizer.accessDeniedHandler(customAccessDeniedHandler()))
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-                .build();
-    }
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        return http.csrf(AbstractHttpConfigurer::disable)
+//                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+//                .authorizeHttpRequests((auth) -> {
+//                            auth.requestMatchers("/login", "/register", "/logout").permitAll();
+//                            auth.requestMatchers("/admin/**", "/teachers/**", "/students/**", "/users/**").hasAnyAuthority("ADMIN");
+//                            auth.requestMatchers("/teachers/**", "/students/**").hasAnyAuthority("TEACHER");
+//                            auth.requestMatchers("/students/**").hasAnyAuthority("STUDENT");
+//                            auth.anyRequest().authenticated();
+//                        }
+//                )
+////                .logout(l -> l
+////                        .logoutUrl("/logout")
+////                        .logoutSuccessUrl("/hello")
+////                        .invalidateHttpSession(true)
+////                        .deleteCookies("JSESSIONID"))
+////                .oauth2Login(withDefaults())
+//
+//                .exceptionHandling(customizer -> customizer.accessDeniedHandler(customAccessDeniedHandler()))
+//                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+//                .build();
+//    }
+//}
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    return http.csrf(csrf -> csrf.disable())
+            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+            .authorizeHttpRequests(auth -> auth
+                            .requestMatchers("/login", "/register", "/hello", "/**").permitAll()
+//                        .requestMatchers("/users/**").hasAnyAuthority("ROLE_USER")
+//                        .requestMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN")
+            )
+            .exceptionHandling(customizer -> customizer.accessDeniedHandler(customAccessDeniedHandler()))
+            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .httpBasic(Customizer.withDefaults())
+            .build();
 }
+}
+
