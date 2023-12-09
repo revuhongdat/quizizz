@@ -244,7 +244,7 @@ public class UserController {
         if (userOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
+        emailService.sendEmailApproved(userOptional.get().getUsername());
         userOptional.get().setStatus(1);
         userOptional.get().setEnabled(true);
         userService.save(userOptional.get());
