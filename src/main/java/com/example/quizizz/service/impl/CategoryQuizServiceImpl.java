@@ -31,4 +31,9 @@ public class CategoryQuizServiceImpl implements CategoryQuizService {
     public void delete(Long id) {
         categoryQuizRepository.deleteById(id);
     }
+
+    @Override
+    public Optional<CategoryQuiz> findCategoryQuizByName(String name) {
+        return categoryQuizRepository.findCategoryQuizByName(name);
+    }
 }
