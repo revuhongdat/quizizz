@@ -95,7 +95,7 @@ public class UserController {
             roles.add(role);
             user.setRoles(roles);
         }
-//        user.setImage();
+        user.setImage("https://firebasestorage.googleapis.com/v0/b/kien-b06e6.appspot.com/o/kien%2Fuser-profile-computer-icons-login-user-avatars-bda.png?alt=media&token=09643ff7-f122-444b-8629-52a9f9081337");
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setConfirmPassword(passwordEncoder.encode(user.getConfirmPassword()));
         userService.save(user);
@@ -282,4 +282,12 @@ public class UserController {
         return new ResponseEntity<>(filteredUsers, HttpStatus.OK);
     }
 
+    @GetMapping("/users/fbu/{email}")
+    public ResponseEntity<?> findByUsername(@PathVariable String email) {
+        User user = userService.findByUsername(email);
+        if (user != null) {
+            return new ResponseEntity<>("OK",HttpStatus.OK);
+        }
+        return new ResponseEntity<>("NOT FOUND",HttpStatus.NOT_FOUND);
+    }
 }
