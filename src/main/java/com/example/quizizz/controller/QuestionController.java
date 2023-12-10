@@ -5,6 +5,7 @@ import com.example.quizizz.model.Question;
 import com.example.quizizz.model.Quiz;
 import com.example.quizizz.service.QuestionService;
 import com.example.quizizz.service.QuizService;
+import com.example.quizizz.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +21,13 @@ import java.util.Set;
 public class QuestionController {
     final QuestionService questionService;
     final QuizService quizService;
+    private final UserService userService;
 
     @Autowired
-    public QuestionController(QuestionService questionService, QuizService quizService) {
+    public QuestionController(QuestionService questionService, QuizService quizService, UserService userService) {
         this.questionService = questionService;
         this.quizService = quizService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -66,15 +69,18 @@ public class QuestionController {
         if (questionOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Iterable<Quiz> quizzes = quizService.findAll();
-        for (Quiz quiz : quizzes) {
-            Set<Question> quizQuestions = quiz.getQuestions();
-            for (Question quizQuestion : quizQuestions) {
-                if (Objects.equals(quizQuestion.getId(), questionOptional.get().getId())) {
-                    return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        if (Objects.equals(userService.getCurrentUser().getId(), questionOptional.get().getUser().getId())) {
+            Iterable<Quiz> quizzes = quizService.findAll();
+            for (Quiz quiz : quizzes) {
+                Set<Question> quizQuestions = quiz.getQuestions();
+                for (Question quizQuestion : quizQuestions) {
+                    if (Objects.equals(quizQuestion.getId(), questionOptional.get().getId())) {
+                        return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+                    }
                 }
             }
         }
+
         questionService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
