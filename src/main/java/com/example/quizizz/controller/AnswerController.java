@@ -27,7 +27,7 @@ public class AnswerController {
     @GetMapping("/{id}")
     public ResponseEntity<Optional<Answer>> findById(@PathVariable Long id) {
         Optional<Answer> answer = answerService.findById(id);
-        return new ResponseEntity<>(answer, HttpStatus.OK;
+        return new ResponseEntity<>(answer, HttpStatus.OK);
     }
     @PostMapping
     public ResponseEntity<?> createAnswer (Answer answer) {
@@ -45,5 +45,9 @@ public class AnswerController {
             answerOptional.get().setStatus(answer.getStatus());
         }
         return new ResponseEntity<>(answerOptional, HttpStatus.OK);
+    }
+    @DeleteMapping("/{id}")
+    public void deleteAnswer(@PathVariable Long id) {
+        answerService.delete(id);
     }
 }
