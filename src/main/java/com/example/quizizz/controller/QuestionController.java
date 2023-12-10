@@ -71,7 +71,7 @@ public class QuestionController {
             Set<Question> quizQuestions = quiz.getQuestions();
             for (Question quizQuestion : quizQuestions) {
                 if (Objects.equals(quizQuestion.getId(), questionOptional.get().getId())) {
-                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
                 }
             }
         }

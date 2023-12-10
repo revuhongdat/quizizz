@@ -12,4 +12,7 @@ public class CategoryQuiz {
 
     private String name;
     private String description;
+    @ManyToOne
+    @JoinColumn(name = "id_user")
+    private User user;
 }
