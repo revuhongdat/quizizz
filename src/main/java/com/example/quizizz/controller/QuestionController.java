@@ -19,7 +19,7 @@ import java.util.Set;
 @RequestMapping("/questions")
 public class QuestionController {
     final QuestionService questionService;
-    private final QuizService quizService;
+    final QuizService quizService;
 
     @Autowired
     public QuestionController(QuestionService questionService, QuizService quizService) {
@@ -77,5 +77,17 @@ public class QuestionController {
         }
         questionService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<Iterable<Question>> findByCategoryQuestion(@PathVariable Long categoryId) {
+        Iterable<Question> questions = questionService.findAllByCategoryQuestion_Id(categoryId);
+        return new ResponseEntity<>(questions, HttpStatus.OK);
+    }
+
+    @GetMapping("/quiz/{quizId}")
+    public ResponseEntity<Iterable<Question>> findByQuiz(@PathVariable Long quizId) {
+        Iterable<Question> questions = questionService.findAllByQuizId(quizId);
+        return new ResponseEntity<>(questions, HttpStatus.OK);
     }
 }

@@ -35,4 +35,14 @@ public class QuestionServiceImpl implements QuestionService {
     public void delete(Long id) {
         questionRepository.deleteById(id);
     }
+
+    @Override
+    public Iterable<Question> findAllByCategoryQuestion_Id(Long categoryQuestion_id) {
+        return questionRepository.findAllByCategoryQuestion_Id(categoryQuestion_id);
+    }
+
+    @Override
+    public Iterable<Question> findAllByQuizId(Long quizId) {
+        return questionRepository.findAllByQuizId(quizId);
+    }
 }
