@@ -43,7 +43,7 @@ public class QuestionController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createQuestion(Question question) {
+    public ResponseEntity<?> createQuestion(@RequestBody Question question) {
         Question savedQuestion = questionService.save(question);
         return new ResponseEntity<>(savedQuestion, HttpStatus.CREATED);
     }
