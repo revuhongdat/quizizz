@@ -35,14 +35,14 @@ public class CategoryQuestionController {
 
 
     @GetMapping
-    public ResponseEntity<Iterable<CategoryQuestion>> showAllCateQuiz() {
+    public ResponseEntity<Iterable<CategoryQuestion>> showAllCateQuestion() {
         Iterable<CategoryQuestion>
                 categoryQuestions = categoryQuestionService.findAll();
         return new ResponseEntity<>(categoryQuestions, HttpStatus.OK);
     }
 
     @GetMapping("/sort")
-    public ResponseEntity<Iterable<CategoryQuestion>> sortAllCateQuiz() {
+    public ResponseEntity<Iterable<CategoryQuestion>> sortAllCateQuestion() {
         Iterable<CategoryQuestion> categoryQuestions = categoryQuestionService.findAll();
 
         Iterable<CategoryQuestion> sortedCategories = StreamSupport.stream(categoryQuestions.spliterator(), false)
@@ -53,13 +53,13 @@ public class CategoryQuestionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryQuestion> findCateQuizById(@PathVariable Long id) {
+    public ResponseEntity<CategoryQuestion> findCateQuestionById(@PathVariable Long id) {
         Optional<CategoryQuestion> categoryQuestion = categoryQuestionService.findById(id);
         return categoryQuestion.map(categoryQuestion1 -> new ResponseEntity<>(categoryQuestion1, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping
-    public ResponseEntity<CategoryQuestion> createCateQuiz(@RequestBody CategoryQuestion categoryQuestion, BindingResult bindingResult) {
+    public ResponseEntity<CategoryQuestion> createCateQuestion(@RequestBody CategoryQuestion categoryQuestion, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
