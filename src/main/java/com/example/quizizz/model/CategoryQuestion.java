@@ -11,7 +11,7 @@ public class CategoryQuestion {
     private Long id;
 
     private String name;
-
+    private String description;
     @ManyToOne
     @JoinColumn(name = "id_user")
     private User user;
