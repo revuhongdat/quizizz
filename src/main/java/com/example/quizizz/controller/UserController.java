@@ -26,7 +26,7 @@ import java.util.*;
 
 @RestController
 @CrossOrigin("*")
-public class UserController {
+public class      UserController {
     private final AuthenticationManager authenticationManager;
 
     private final JwtService jwtService;
@@ -131,10 +131,10 @@ public class UserController {
         if (userOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        user.setId(user.getId() == null ? userOptional.get().getId() : user.getId());
-        user.setName(user.getName() == null ? userOptional.get().getName() : user.getName());
-        user.setImage(user.getImage() == null ? userOptional.get().getImage() : user.getImage());
-        user.setRoles(user.getRoles() == null ? userOptional.get().getRoles() : user.getRoles());
+        userOptional.get().setId(user.getId() == null ? userOptional.get().getId() : user.getId());
+        userOptional.get().setName(user.getName() == null ? userOptional.get().getName() : user.getName());
+        userOptional.get().setImage(user.getImage() == null ? userOptional.get().getImage() : user.getImage());
+        userOptional.get().setRoles(user.getRoles() == null ? userOptional.get().getRoles() : user.getRoles());
         userService.save(userOptional.get());
         return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
     }
