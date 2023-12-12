@@ -30,7 +30,7 @@ public class AnswerController {
         return new ResponseEntity<>(answer, HttpStatus.OK);
     }
     @PostMapping
-    public ResponseEntity<?> createAnswer (Answer answer) {
+    public ResponseEntity<?> createAnswer (@RequestBody Answer answer) {
         Answer savedAnswer = answerService.save(answer);
         return new ResponseEntity<>(savedAnswer, HttpStatus.CREATED);
     }
