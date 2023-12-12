@@ -1,13 +1,16 @@
 package com.example.quizizz.controller;
 
 import com.example.quizizz.model.CategoryQuiz;
+import com.example.quizizz.model.Quiz;
 import com.example.quizizz.service.CategoryQuizService;
+import com.example.quizizz.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -17,6 +20,8 @@ public class CategoryQuizController {
 
     @Autowired
     CategoryQuizService categoryQuizService;
+    @Autowired
+    QuizService quizService;
 
     @GetMapping
     public ResponseEntity<Iterable<CategoryQuiz>> showAllCateQuiz() {
@@ -66,4 +71,20 @@ public class CategoryQuizController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<CategoryQuiz> deleteCategoryQuiz(@PathVariable Long id) {
+        Optional<CategoryQuiz> categoryQuiz = categoryQuizService.findById(id);
+        if (categoryQuiz.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            Iterable<Quiz> quizzes = quizService.findAll();
+            for ( Quiz quiz : quizzes) {
+                if (Objects.equals(quiz.getCategoryQuiz().getId(), categoryQuiz.get().getId())) {
+                    return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+                }
+            }
+            categoryQuizService.delete(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+    }
 }
