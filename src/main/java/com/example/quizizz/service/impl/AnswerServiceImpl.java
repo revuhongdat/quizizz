@@ -30,4 +30,9 @@ public class AnswerServiceImpl implements AnswerService {
     public void delete(Long id) {
         answerRepository.deleteById(id);
     }
+
+    @Override
+    public Iterable<Answer> findAllByQuestion_Id(Long questionId) {
+        return answerRepository.findAllByQuestion_Id(questionId);
+    }
 }

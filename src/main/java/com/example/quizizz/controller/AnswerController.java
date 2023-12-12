@@ -50,4 +50,9 @@ public class AnswerController {
     public void deleteAnswer(@PathVariable Long id) {
         answerService.delete(id);
     }
+    @GetMapping("/fbq/{questionId}")
+    public ResponseEntity<Iterable<Answer>> findAllAnswerByQuestionId(@PathVariable Long questionId) {
+        Iterable<Answer> answers = answerService.findAllByQuestion_Id(questionId);
+        return new ResponseEntity<>(answers, HttpStatus.OK);
+    }
 }
