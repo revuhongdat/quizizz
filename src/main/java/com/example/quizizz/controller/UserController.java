@@ -26,7 +26,7 @@ import java.util.*;
 
 @RestController
 @CrossOrigin("*")
-public class      UserController {
+public class UserController {
     private final AuthenticationManager authenticationManager;
 
     private final JwtService jwtService;
