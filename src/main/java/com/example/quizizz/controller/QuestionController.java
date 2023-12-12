@@ -3,6 +3,7 @@ package com.example.quizizz.controller;
 import com.example.quizizz.model.CategoryQuestion;
 import com.example.quizizz.model.Question;
 import com.example.quizizz.model.Quiz;
+import com.example.quizizz.model.User;
 import com.example.quizizz.service.QuestionService;
 import com.example.quizizz.service.QuizService;
 import com.example.quizizz.service.UserService;
@@ -65,24 +66,24 @@ public class QuestionController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Question> deleteQuestion(@PathVariable Long id) {
+        // Check if the user is authenticated
+        User currentUser = userService.getCurrentUser();
+        if (currentUser == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // Or handle as per your authentication logic
+        }
+
         Optional<Question> questionOptional = this.questionService.findById(id);
         if (questionOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        if (Objects.equals(userService.getCurrentUser().getId(), questionOptional.get().getUser().getId())) {
-            Iterable<Quiz> quizzes = quizService.findAll();
-            for (Quiz quiz : quizzes) {
-                Set<Question> quizQuestions = quiz.getQuestions();
-                for (Question quizQuestion : quizQuestions) {
-                    if (Objects.equals(quizQuestion.getId(), questionOptional.get().getId())) {
-                        return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-                    }
-                }
+
+        if (Objects.equals(currentUser.getId(), questionOptional.get().getUser().getId())) {
+            if (questionOptional.get().getQuiz() == null) {
+                questionService.delete(id);
+                return new ResponseEntity<>(HttpStatus.OK);
             }
         }
-
-        questionService.delete(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/category/{categoryId}")
