@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
     Iterable<Answer> findAllByQuestion_Id (Long questionId);
+    void deleteAllByQuestion_Id (Long questionId);
 }
