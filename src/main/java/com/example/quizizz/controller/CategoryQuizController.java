@@ -52,6 +52,7 @@ public class CategoryQuizController {
         categoryQuizService.save(categoryQuiz);
         return new ResponseEntity<>(categoryQuiz, HttpStatus.CREATED);
     }
+
     // Phương thức để viết hoa chữ cái đầu của mỗi từ trong chuỗi
     private String capitalizeWordsKeepHtmlTags(String input) {
         if (input == null || input.isEmpty()) {
@@ -90,6 +91,9 @@ public class CategoryQuizController {
     public ResponseEntity<CategoryQuiz> updateCategoryQuiz(@PathVariable Long id, @RequestBody CategoryQuiz categoryQuiz) {
         Iterable<CategoryQuiz> categoryQuizzes = categoryQuizService.findAll();
         for (CategoryQuiz currentCateQuiz : categoryQuizzes) {
+            if (Objects.equals(currentCateQuiz.getId(), id)) {
+                continue;
+            }
             if (currentCateQuiz.getName().equalsIgnoreCase(categoryQuiz.getName())) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }

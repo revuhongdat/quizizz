@@ -64,8 +64,9 @@ public class CategoryQuestionController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Iterable<CategoryQuestion> categoryQuestions = categoryQuestionService.findAll();
-        for (CategoryQuestion categoryQuestion1 : categoryQuestions) {
-            if (categoryQuestion1.getName().equalsIgnoreCase(categoryQuestion.getName().toUpperCase())) {
+        for (CategoryQuestion currentCateQuestion : categoryQuestions) {
+
+            if (currentCateQuestion.getName().equalsIgnoreCase(categoryQuestion.getName().toUpperCase())) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
@@ -116,8 +117,11 @@ public class CategoryQuestionController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         Iterable<CategoryQuestion> categoryQuestions = categoryQuestionService.findAll();
-        for (CategoryQuestion categoryQuestion1 : categoryQuestions) {
-            if (categoryQuestion1.getName().equalsIgnoreCase(categoryQuestion.getName().toUpperCase())) {
+        for (CategoryQuestion currentCateQuestion : categoryQuestions) {
+            if (Objects.equals(currentCateQuestion.getId(), id)) {
+                continue;
+            }
+            if (currentCateQuestion.getName().equalsIgnoreCase(categoryQuestion.getName().toUpperCase())) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
