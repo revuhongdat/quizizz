@@ -2,7 +2,6 @@ package com.example.quizizz.controller;
 
 import com.example.quizizz.model.Answer;
 import com.example.quizizz.service.impl.AnswerServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,9 +45,11 @@ public class AnswerController {
         }
         return new ResponseEntity<>(answerOptional, HttpStatus.OK);
     }
-    @DeleteMapping("/{id}")
-    public void deleteAnswer(@PathVariable Long id) {
-        answerService.delete(id);
+    @DeleteMapping("/{questionId}")
+
+    public ResponseEntity<Answer>  deleteAnswer(@PathVariable Long questionId) {
+        answerService.deleteAllByQuestion_Id(questionId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     @GetMapping("/fbq/{questionId}")
     public ResponseEntity<Iterable<Answer>> findAllAnswerByQuestionId(@PathVariable Long questionId) {

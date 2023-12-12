@@ -3,6 +3,7 @@ package com.example.quizizz.service.impl;
 import com.example.quizizz.model.Answer;
 import com.example.quizizz.repository.AnswerRepository;
 import com.example.quizizz.service.AnswerService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,4 +36,12 @@ public class AnswerServiceImpl implements AnswerService {
     public Iterable<Answer> findAllByQuestion_Id(Long questionId) {
         return answerRepository.findAllByQuestion_Id(questionId);
     }
+
+    @Override
+    @Transactional
+    public void deleteAllByQuestion_Id(Long questionId) {
+        answerRepository.deleteAllByQuestion_Id(questionId);
+    }
+
+
 }
