@@ -69,24 +69,44 @@ public class CategoryQuestionController {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
-        String name = capitalizeWords(categoryQuestion.getName());
+        String name = capitalizeWordsKeepHtmlTags(categoryQuestion.getName());
         categoryQuestion.setUser(categoryQuestion.getUser());
+        categoryQuestion.setName(name);
         categoryQuestionService.save(categoryQuestion);
         return new ResponseEntity<>(categoryQuestion, HttpStatus.CREATED);
     }
 
-    private String capitalizeWords(String input) {
+    private String capitalizeWordsKeepHtmlTags(String input) {
         if (input == null || input.isEmpty()) {
             return input;
         }
 
-        String[] words = input.split("\\s+");
+        // Tách chuỗi thành các phần với các thẻ HTML
+        String[] parts = input.split("(?=<)|(?<=>)");
+
         StringBuilder result = new StringBuilder();
-        for (String word : words) {
-            String capitalizedWord = word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
-            result.append(capitalizedWord).append(" ");
+        boolean insideTag = false;
+
+        for (String part : parts) {
+            if (part.startsWith("<")) {
+                // Nếu là thẻ HTML, không viết hoa chữ cái đầu
+                result.append(part);
+                if (!part.endsWith(">")) {
+                    insideTag = true;
+                }
+            } else {
+                // Nếu là văn bản bên trong thẻ, viết hoa chữ cái đầu của mỗi từ
+                String[] words = part.split("\\s+");
+                StringBuilder capitalizedText = new StringBuilder();
+                for (String word : words) {
+                    String capitalizedWord = word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
+                    capitalizedText.append(capitalizedWord).append(" ");
+                }
+                result.append(capitalizedText.toString().trim());
+                insideTag = false;
+            }
         }
-        return result.toString().trim();
+        return result.toString();
     }
 
     @PutMapping("/{id}")
@@ -95,16 +115,18 @@ public class CategoryQuestionController {
         if (categoryQuizOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        if (categoryQuizOptional.get().getUser() == null || !categoryQuizOptional.get().getUser().equals(categoryQuestion.getUser())) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        Iterable<CategoryQuestion> categoryQuestions = categoryQuestionService.findAll();
+        for (CategoryQuestion categoryQuestion1 : categoryQuestions) {
+            if (categoryQuestion1.getName().equalsIgnoreCase(categoryQuestion.getName().toUpperCase())) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
         }
-        if (categoryQuestion.getName() != null) {
-            categoryQuizOptional.get().setName(categoryQuestion.getName());
-        }
-        if (categoryQuestion.getUser() != null) {
-            categoryQuizOptional.get().setUser(categoryQuestion.getUser());
-        }
-        return new ResponseEntity<>(categoryQuizOptional.get(), HttpStatus.OK);
+        String name = capitalizeWordsKeepHtmlTags(categoryQuestion.getName());
+        categoryQuestion.setUser(categoryQuestion.getUser());
+        categoryQuestion.setName(name);
+        categoryQuestion.setId(id);
+        categoryQuestionService.save(categoryQuestion);
+        return new ResponseEntity<>(categoryQuestion, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
