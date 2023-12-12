@@ -7,7 +7,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
-    Iterable<Question> findAllByCategoryQuestion_Id (Long categoryQuestion_id);
-    Iterable<Question> findAllByQuizId (Long quizId);
+    Iterable<Question> findAllByCategoryQuestion_Id(Long categoryQuestion_id);
 
+    Iterable<Question> findAllByQuizId(Long quizId);
+
+    Iterable<Question> findAllByContentContains(String content);
 }

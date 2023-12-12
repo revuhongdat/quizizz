@@ -37,15 +37,30 @@ public class CategoryQuizController {
         }
         Iterable<CategoryQuiz> categoryQuizzes = categoryQuizService.findAll();
         for (CategoryQuiz currentCateQuiz : categoryQuizzes) {
-            if (currentCateQuiz.getName().equals(categoryQuiz.getName().toUpperCase())) {
+            if (currentCateQuiz.getName().equalsIgnoreCase(categoryQuiz.getName())) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
-        categoryQuiz.setName(categoryQuiz.getName().replaceFirst("^.", String.valueOf(categoryQuiz.getName().charAt(0)).toUpperCase()));
+        // Viết hoa chữ cái đầu của mỗi từ trong categoryQuiz.getName()
+        String name = capitalizeWords(categoryQuiz.getName());
+        categoryQuiz.setName(name);
         categoryQuizService.save(categoryQuiz);
         return new ResponseEntity<>(categoryQuiz, HttpStatus.CREATED);
     }
+    // Phương thức để viết hoa chữ cái đầu của mỗi từ trong chuỗi
+    private String capitalizeWords(String input) {
+        if (input == null || input.isEmpty()) {
+            return input;
+        }
 
+        String[] words = input.split("\\s+");
+        StringBuilder result = new StringBuilder();
+        for (String word : words) {
+            String capitalizedWord = word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
+            result.append(capitalizedWord).append(" ");
+        }
+        return result.toString().trim();
+    }
     @PutMapping("/{id}")
     public ResponseEntity<CategoryQuiz> updateCategoryQuiz(@PathVariable Long id, @RequestBody CategoryQuiz categoryQuiz) {
         Optional<CategoryQuiz> categoryQuizOptional = this.categoryQuizService.findById(id);
