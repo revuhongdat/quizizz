@@ -65,14 +65,28 @@ public class CategoryQuestionController {
         }
         Iterable<CategoryQuestion> categoryQuestions = categoryQuestionService.findAll();
         for (CategoryQuestion categoryQuestion1 : categoryQuestions) {
-            if (categoryQuestion1.getName().equals(categoryQuestion.getName().toUpperCase())) {
+            if (categoryQuestion1.getName().equalsIgnoreCase(categoryQuestion.getName().toUpperCase())) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
-        categoryQuestion.setName(categoryQuestion.getName().replaceFirst("^.", String.valueOf(categoryQuestion.getName().charAt(0)).toUpperCase()));
+        String name = capitalizeWords(categoryQuestion.getName());
         categoryQuestion.setUser(categoryQuestion.getUser());
         categoryQuestionService.save(categoryQuestion);
         return new ResponseEntity<>(categoryQuestion, HttpStatus.CREATED);
+    }
+
+    private String capitalizeWords(String input) {
+        if (input == null || input.isEmpty()) {
+            return input;
+        }
+
+        String[] words = input.split("\\s+");
+        StringBuilder result = new StringBuilder();
+        for (String word : words) {
+            String capitalizedWord = word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
+            result.append(capitalizedWord).append(" ");
+        }
+        return result.toString().trim();
     }
 
     @PutMapping("/{id}")
@@ -92,8 +106,9 @@ public class CategoryQuestionController {
         }
         return new ResponseEntity<>(categoryQuizOptional.get(), HttpStatus.OK);
     }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<CategoryQuestion> deleteCategoryQuestion (@PathVariable Long id) {
+    public ResponseEntity<CategoryQuestion> deleteCategoryQuestion(@PathVariable Long id) {
         Optional<CategoryQuestion> categoryQuizOptional = this.categoryQuestionService.findById(id);
         if (categoryQuizOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
