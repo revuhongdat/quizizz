@@ -45,4 +45,9 @@ public class QuestionServiceImpl implements QuestionService {
     public Iterable<Question> findAllByQuizId(Long quizId) {
         return questionRepository.findAllByQuizId(quizId);
     }
+
+    @Override
+    public Iterable<Question> findAllByContentContains(String content) {
+        return questionRepository.findAllByContentContains(content);
+    }
 }

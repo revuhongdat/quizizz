@@ -96,4 +96,9 @@ public class QuestionController {
         Iterable<Question> questions = questionService.findAllByQuizId(quizId);
         return new ResponseEntity<>(questions, HttpStatus.OK);
     }
+    @GetMapping("/content/{content}")
+    public ResponseEntity<Iterable<Question>> findByQuiz(@PathVariable String content) {
+        Iterable<Question> questions = questionService.findAllByContentContains(content);
+        return new ResponseEntity<>(questions, HttpStatus.OK);
+    }
 }
