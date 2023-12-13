@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CategoryQuestionRepository extends JpaRepository<CategoryQuestion, Long> {
+    Iterable<CategoryQuestion> findAllByUser_Id(Long id);
 }
