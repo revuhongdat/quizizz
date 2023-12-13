@@ -43,5 +43,8 @@ public class AnswerServiceImpl implements AnswerService {
         answerRepository.deleteAllByQuestion_Id(questionId);
     }
 
-
+    @Override
+    public void deleteByContent(String content) {
+        answerRepository.deleteByContent(content);
+    }
 }
