@@ -56,5 +56,10 @@ public class AnswerController {
         Iterable<Answer> answers = answerService.findAllByQuestion_Id(questionId);
         return new ResponseEntity<>(answers, HttpStatus.OK);
     }
+    @DeleteMapping()
+    public ResponseEntity<?> deleteAllByContentIsEmpty() {
+        answerService.deleteByContent("");
+        return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
 }
 
