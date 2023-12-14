@@ -36,4 +36,14 @@ public class CategoryQuizServiceImpl implements CategoryQuizService {
     public Optional<CategoryQuiz> findCategoryQuizByName(String name) {
         return categoryQuizRepository.findCategoryQuizByName(name);
     }
+
+    @Override
+    public Iterable<CategoryQuiz> findAllByNameContains(String name) {
+        return categoryQuizRepository.findAllByNameContains(name);
+    }
+
+    @Override
+    public Iterable<CategoryQuiz> findAllByDescriptionContains(String description) {
+        return categoryQuizRepository.findAllByDescriptionContains(description);
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.quizizz.controller;
 
+import com.example.quizizz.model.CategoryQuestion;
 import com.example.quizizz.model.CategoryQuiz;
 import com.example.quizizz.model.Quiz;
 import com.example.quizizz.service.CategoryQuizService;
@@ -121,5 +122,18 @@ public class CategoryQuizController {
             categoryQuizService.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
         }
+    }
+    @GetMapping("/name/{name}")
+    public ResponseEntity<Iterable<CategoryQuiz>> showAllCateQuizByName(@PathVariable String name) {
+        Iterable<CategoryQuiz>
+                categoryQuestions = categoryQuizService.findAllByNameContains(name);
+        return new ResponseEntity<>(categoryQuestions, HttpStatus.OK);
+    }
+
+    @GetMapping("/description/{description}")
+    public ResponseEntity<Iterable<CategoryQuiz>> showAllCateQuizByDescription(@PathVariable String description) {
+        Iterable<CategoryQuiz>
+                categoryQuestions = categoryQuizService.findAllByDescriptionContains(description);
+        return new ResponseEntity<>(categoryQuestions, HttpStatus.OK);
     }
 }

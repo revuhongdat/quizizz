@@ -13,13 +13,12 @@ public class Question {
     private int status;
 
     @ManyToOne
-    @JoinColumn(name = "id_quiz")
-    private Quiz quiz;
-
-    @ManyToOne
     @JoinColumn(name = "id_questionType")
     private TypeQuestion typeQuestion;
 
+    @ManyToOne
+    @JoinColumn(name = "id_quiz")
+    private Quiz quiz;
     @ManyToOne
     @JoinColumn(name = "id_categoryQuestion")
     private CategoryQuestion categoryQuestion;

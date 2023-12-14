@@ -9,4 +9,7 @@ import java.util.Optional;
 @Repository
 public interface CategoryQuizRepository extends JpaRepository<CategoryQuiz, Long> {
     Optional<CategoryQuiz> findCategoryQuizByName (String name);
+    Iterable<CategoryQuiz> findAllByNameContains (String name);
+    Iterable<CategoryQuiz> findAllByDescriptionContains (String description);
+
 }

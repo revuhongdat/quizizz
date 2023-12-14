@@ -36,4 +36,14 @@ public class CategoryQuestionServiceImpl implements CategoryQuestService {
     public void delete(Long id) {
         categoryQuestionRepository.deleteById(id);
     }
+
+    @Override
+    public Iterable<CategoryQuestion> findAllByNameContains(String name) {
+        return categoryQuestionRepository.findAllByNameContains(name);
+    }
+
+    @Override
+    public Iterable<CategoryQuestion> findAllByDescriptionContains(String description) {
+        return categoryQuestionRepository.findAllByDescriptionContains(description);
+    }
 }
