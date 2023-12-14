@@ -12,4 +12,5 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     Iterable<Question> findAllByQuizId(Long quizId);
 
     Iterable<Question> findAllByContentContains(String content);
+    Iterable<Question> findAllByUser_Id (Long id);
 }
