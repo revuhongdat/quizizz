@@ -126,7 +126,7 @@ public class CategoryQuestionController {
             }
         }
         String name = capitalizeWordsKeepHtmlTags(categoryQuestion.getName());
-        categoryQuestion.setUser(categoryQuestion.getUser());
+        categoryQuestion.setUser(categoryQuizOptional.get().getUser());
         categoryQuestion.setName(name);
         categoryQuestion.setId(id);
         categoryQuestionService.save(categoryQuestion);
@@ -147,6 +147,11 @@ public class CategoryQuestionController {
         }
         categoryQuestionService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @GetMapping("/findByTeacher/{id}")
+    public ResponseEntity<Iterable<CategoryQuestion>> findCateQuestionByTeacher(@PathVariable Long id) {
+        Iterable<CategoryQuestion> categoryQuestionIterable = categoryQuestionService.findAllByUser_Id(id);
+        return new ResponseEntity<>(categoryQuestionIterable, HttpStatus.OK);
     }
 
     @GetMapping("/name/{name}")

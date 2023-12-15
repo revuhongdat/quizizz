@@ -38,6 +38,11 @@ public class CategoryQuestionServiceImpl implements CategoryQuestService {
     }
 
     @Override
+    public Iterable<CategoryQuestion> findAllByUser_Id(Long id) {
+        return categoryQuestionRepository.findAllByUser_Id(id);
+    }
+
+    @Override
     public Iterable<CategoryQuestion> findAllByNameContains(String name) {
         return categoryQuestionRepository.findAllByNameContains(name);
     }
