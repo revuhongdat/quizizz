@@ -78,4 +78,12 @@ public class QuizController {
         }
         return new ResponseEntity<>(quizzes, HttpStatus.OK);
     }
+    @GetMapping("/fbcq/{id}")
+    public ResponseEntity<?> findAllByCategoryQuizMostResult(@PathVariable Long id) {
+        List<Quiz> quizzes = quizService.findAllByCategoryQuizMostResult(id);
+        if (quizzes.isEmpty()) {
+            return new ResponseEntity<>("Không tìm thấy", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(quizzes, HttpStatus.OK);
+    }
 }
