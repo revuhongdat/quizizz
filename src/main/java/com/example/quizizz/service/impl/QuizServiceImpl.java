@@ -7,11 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-@Service
 
+@Service
 public class QuizServiceImpl implements QuizService {
-    @Autowired
+    final
     QuizRepository quizRepository;
+
+    @Autowired
+    public QuizServiceImpl(QuizRepository quizRepository) {
+        this.quizRepository = quizRepository;
+    }
+
     @Override
     public Iterable<Quiz> findAll() {
         return quizRepository.findAll();
@@ -32,4 +38,8 @@ public class QuizServiceImpl implements QuizService {
         quizRepository.deleteById(id);
     }
 
+    @Override
+    public Iterable<Quiz> findAllByUserId(Long id) {
+        return quizRepository.findAllByUserId(id);
+    }
 }

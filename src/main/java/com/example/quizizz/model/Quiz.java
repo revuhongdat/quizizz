@@ -1,7 +1,9 @@
 package com.example.quizizz.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -10,6 +12,8 @@ import java.util.Set;
 
 @Entity
 @Data
+@AllArgsConstructor
+@RequiredArgsConstructor
 @Table(name = "quiz")
 public class Quiz {
     @Id
@@ -19,7 +23,7 @@ public class Quiz {
     @Column(unique = true, nullable = false)
     private String title;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private int time;
 
     @CreationTimestamp
