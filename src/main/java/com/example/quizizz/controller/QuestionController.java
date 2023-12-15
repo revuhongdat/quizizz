@@ -1,8 +1,6 @@
 package com.example.quizizz.controller;
 
-import com.example.quizizz.model.CategoryQuestion;
 import com.example.quizizz.model.Question;
-import com.example.quizizz.model.Quiz;
 import com.example.quizizz.model.User;
 import com.example.quizizz.service.QuestionService;
 import com.example.quizizz.service.QuizService;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 @RestController
 @CrossOrigin("*")
@@ -78,10 +75,8 @@ public class QuestionController {
         }
 
         if (Objects.equals(currentUser.getId(), questionOptional.get().getUser().getId())) {
-            if (questionOptional.get().getQuiz() == null) {
                 questionService.delete(id);
                 return new ResponseEntity<>(HttpStatus.OK);
-            }
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
