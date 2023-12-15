@@ -40,6 +40,14 @@ public class QuizController {
         return quizOptional.map(quiz -> new ResponseEntity<>(quiz, HttpStatus.OK)).orElseGet(()-> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-
-
+    @PostMapping
+    public ResponseEntity<?> createQuiz(@RequestBody Quiz quiz) {
+        Iterable<Quiz> quizzes = quizService.findAll();
+        for (Quiz q : quizzes) {
+            if (q.getTitle().equals(quiz.getTitle())) {
+                return new ResponseEntity<>("Trùng tên quiz", HttpStatus.BAD_REQUEST);
+            }
+        }
+        return new ResponseEntity<>(quizService.save(quiz), HttpStatus.CREATED);
+    }
 }
