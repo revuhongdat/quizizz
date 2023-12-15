@@ -153,4 +153,18 @@ public class CategoryQuestionController {
         Iterable<CategoryQuestion> categoryQuestionIterable = categoryQuestionService.findAllByUser_Id(id);
         return new ResponseEntity<>(categoryQuestionIterable, HttpStatus.OK);
     }
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<Iterable<CategoryQuestion>> showAllCateQuestionByName(@PathVariable String name) {
+        Iterable<CategoryQuestion>
+                categoryQuestions = categoryQuestionService.findAllByNameContains(name);
+        return new ResponseEntity<>(categoryQuestions, HttpStatus.OK);
+    }
+
+    @GetMapping("/description/{description}")
+    public ResponseEntity<Iterable<CategoryQuestion>> showAllCateQuestionByDescription(@PathVariable String description) {
+        Iterable<CategoryQuestion>
+                categoryQuestions = categoryQuestionService.findAllByDescriptionContains(description);
+        return new ResponseEntity<>(categoryQuestions, HttpStatus.OK);
+    }
 }

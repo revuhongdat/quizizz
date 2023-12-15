@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Entity
 @Data
+@Table(name = "question")
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,19 +14,15 @@ public class Question {
     private int status;
 
     @ManyToOne
-    @JoinColumn(name = "id_quiz")
-    private Quiz quiz;
-
-    @ManyToOne
-    @JoinColumn(name = "id_questionType")
+    @JoinColumn(name = "id_question_type")
     private TypeQuestion typeQuestion;
 
     @ManyToOne
-    @JoinColumn(name = "id_categoryQuestion")
+    @JoinColumn(name = "id_category_question")
     private CategoryQuestion categoryQuestion;
 
     @ManyToOne
-    @JoinColumn(name = "id_levelQuestion")
+    @JoinColumn(name = "id_level_question")
     private LevelQuestion levelQuestion;
 
     @ManyToOne

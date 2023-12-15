@@ -33,7 +33,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public void delete(Long id) {
-        questionRepository.deleteById(id);
+        questionRepository.deleteQuestionNotInQuiz(id);
     }
 
     @Override
@@ -43,11 +43,16 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Iterable<Question> findAllByQuizId(Long quizId) {
-        return questionRepository.findAllByQuizId(quizId);
+        return questionRepository.findAll();
     }
 
     @Override
     public Iterable<Question> findAllByContentContains(String content) {
         return questionRepository.findAllByContentContains(content);
+    }
+
+    @Override
+    public Iterable<Question> findAllByUser_Id(Long id) {
+        return questionRepository.findAllByUser_Id(id);
     }
 }

@@ -10,6 +10,7 @@ import java.util.Set;
 
 @Entity
 @Data
+@Table(name = "quiz")
 public class Quiz {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,11 +34,11 @@ public class Quiz {
     private int status;
 
     @ManyToOne
-    @JoinColumn(name = "id_categoryQuiz")
+    @JoinColumn(name = "id_category_quiz")
     private CategoryQuiz categoryQuiz;
 
     @ManyToOne
-    @JoinColumn(name = "id_levelQuiz")
+    @JoinColumn(name = "id_level_quiz")
     private LevelQuiz levelQuiz;
 
     @ManyToOne
