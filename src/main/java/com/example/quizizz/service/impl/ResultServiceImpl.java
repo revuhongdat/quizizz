@@ -38,4 +38,9 @@ public class ResultServiceImpl implements ResultService {
     public void delete(Long id) {
 
     }
+
+    @Override
+    public Iterable<Result> findAllByQuizId(Long id) {
+        return resultRepository.findAllByQuizId(id);
+    }
 }

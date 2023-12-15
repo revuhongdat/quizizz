@@ -5,10 +5,7 @@ import com.example.quizizz.service.ResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,6 +23,14 @@ public class ResultController {
     @GetMapping
     public ResponseEntity<?> findAll() {
         List<Result> results = (List<Result>) resultService.findAll();
+        if (results.isEmpty()) {
+            return new ResponseEntity<>("Không có", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(results, HttpStatus.OK);
+    }
+    @GetMapping("/fbq/{id}")
+    public ResponseEntity<?> findAllByQuizId(@PathVariable Long id) {
+        List<Result> results = (List<Result>) resultService.findAllByQuizId(id);
         if (results.isEmpty()) {
             return new ResponseEntity<>("Không có", HttpStatus.NOT_FOUND);
         }
