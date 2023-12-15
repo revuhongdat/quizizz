@@ -6,9 +6,12 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
+@Table(name = "result")
 public class Result {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,4 +38,10 @@ public class Result {
     @ManyToOne
     @JoinColumn(name = "id_room")
     private Room room;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "result_answer",
+            joinColumns = {@JoinColumn(name = "id_result")},
+            inverseJoinColumns = {@JoinColumn(name = "id_answer")})
+    private Set<Answer> answers = new HashSet<>();
 }
