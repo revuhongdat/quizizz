@@ -6,6 +6,7 @@ import com.example.quizizz.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,5 +42,10 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public Iterable<Quiz> findAllByUserId(Long id) {
         return quizRepository.findAllByUserId(id);
+    }
+
+    @Override
+    public List<Quiz> findAllByCategoryQuizMostResult(Long id) {
+        return quizRepository.findAllByCategoryQuizMostResult(id);
     }
 }
