@@ -86,4 +86,12 @@ public class QuizController {
         }
         return new ResponseEntity<>(quizzes, HttpStatus.OK);
     }
+    @GetMapping("/hot")
+    public ResponseEntity<?> findHotQuizEachCategoryQuiz() {
+        List<Quiz> quizzes = quizService.findQuizWithMostResultsInEachCategory();
+        if (quizzes.isEmpty()) {
+            return new ResponseEntity<>("Không tìm thấy", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(quizzes, HttpStatus.OK);
+    }
 }
