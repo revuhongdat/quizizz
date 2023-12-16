@@ -48,4 +48,9 @@ public class QuizServiceImpl implements QuizService {
     public List<Quiz> findAllByCategoryQuizMostResult(Long id) {
         return quizRepository.findAllByCategoryQuizMostResult(id);
     }
+
+    @Override
+    public List<Quiz> findQuizWithMostResultsInEachCategory() {
+        return quizRepository.findQuizWithMostResultsInEachCategory();
+    }
 }
