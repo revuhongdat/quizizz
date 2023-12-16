@@ -53,4 +53,9 @@ public class QuizServiceImpl implements QuizService {
     public List<Quiz> findQuizWithMostResultsInEachCategory() {
         return quizRepository.findQuizWithMostResultsInEachCategory();
     }
+
+    @Override
+    public Iterable<Quiz> findAllByTitleContaining(String name) {
+        return quizRepository.findAllByTitleContaining(name);
+    }
 }

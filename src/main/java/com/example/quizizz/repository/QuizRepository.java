@@ -50,4 +50,5 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
                     "    LIMIT 1 " +
                     ")", nativeQuery = true)
     List<Quiz> findQuizWithMostResultsInEachCategory();
+    Iterable<Quiz> findAllByTitleContaining(String name);
 }

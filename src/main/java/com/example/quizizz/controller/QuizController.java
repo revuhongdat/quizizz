@@ -94,4 +94,12 @@ public class QuizController {
         }
         return new ResponseEntity<>(quizzes, HttpStatus.OK);
     }
+    @GetMapping("/fbn/{name}")
+    public ResponseEntity<?> findAllByTitleContaining(@PathVariable String name) {
+        List<Quiz> quizzes = (List<Quiz>) quizService.findAllByTitleContaining(name);
+        if (quizzes.isEmpty()) {
+            return new ResponseEntity<>("Không tìm thấy", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(quizzes, HttpStatus.OK);
+    }
 }
