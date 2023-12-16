@@ -8,10 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+
 @Service
 public class AnswerServiceImpl implements AnswerService {
-    @Autowired
+    final
     AnswerRepository answerRepository;
+
+    @Autowired
+    public AnswerServiceImpl(AnswerRepository answerRepository) {
+        this.answerRepository = answerRepository;
+    }
+
     @Override
     public Iterable<Answer> findAll() {
         return answerRepository.findAll();
@@ -30,21 +37,5 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public void delete(Long id) {
         answerRepository.deleteById(id);
-    }
-
-    @Override
-    public Iterable<Answer> findAllByQuestion_Id(Long questionId) {
-        return answerRepository.findAllByQuestion_Id(questionId);
-    }
-
-    @Override
-    @Transactional
-    public void deleteAllByQuestion_Id(Long questionId) {
-        answerRepository.deleteAllByQuestion_Id(questionId);
-    }
-
-    @Override
-    public void deleteByContent(String content) {
-        answerRepository.deleteByContent(content);
     }
 }

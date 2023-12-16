@@ -17,8 +17,4 @@ public class Answer {
     private String content;
     private String img;
     private int status;
-
-    @ManyToOne
-    @JoinColumn(name = "id_question")
-    private Question question;
 }

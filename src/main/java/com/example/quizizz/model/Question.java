@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -32,4 +35,7 @@ public class Question {
     @ManyToOne
     @JoinColumn(name = "id_user")
     private User user;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private Set<Answer> answers = new HashSet<>();
 }
