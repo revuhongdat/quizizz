@@ -47,12 +47,6 @@ public class QuestionController {
         return new ResponseEntity<>(question, HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<?> createQuestion(@RequestBody Question question) {
-        Question savedQuestion = questionService.save(question);
-        return new ResponseEntity<>(savedQuestion, HttpStatus.CREATED);
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<?> updateQuestion(@PathVariable Long id, Question question) {
         Optional<Question> questionById = questionService.findById(id);
@@ -109,7 +103,7 @@ public class QuestionController {
         Iterable<Question> questions = questionService.findAllByUser_Id(userId);
         return new ResponseEntity<>(questions, HttpStatus.OK);
     }
-    @PostMapping("hihi")
+    @PostMapping()
     public ResponseEntity<?> haha(@RequestBody QuestionDTO questionDTO) {
         Set<Answer> answerSet = questionDTO.getAnswers();
         for (Answer item: answerSet) {
