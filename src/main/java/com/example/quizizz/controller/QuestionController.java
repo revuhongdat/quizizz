@@ -1,17 +1,22 @@
 package com.example.quizizz.controller;
 
+import com.example.quizizz.DTO.QuestionDTO;
+import com.example.quizizz.model.Answer;
 import com.example.quizizz.model.Question;
 import com.example.quizizz.model.User;
+import com.example.quizizz.service.AnswerService;
 import com.example.quizizz.service.QuestionService;
 import com.example.quizizz.service.QuizService;
 import com.example.quizizz.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @CrossOrigin("*")
@@ -20,12 +25,14 @@ public class QuestionController {
     final QuestionService questionService;
     final QuizService quizService;
     private final UserService userService;
+    private final AnswerService answerService;
 
     @Autowired
-    public QuestionController(QuestionService questionService, QuizService quizService, UserService userService) {
+    public QuestionController(QuestionService questionService, QuizService quizService, UserService userService, AnswerService answerService) {
         this.questionService = questionService;
         this.quizService = quizService;
         this.userService = userService;
+        this.answerService = answerService;
     }
 
     @GetMapping
@@ -101,5 +108,13 @@ public class QuestionController {
     public ResponseEntity<Iterable<Question>> findQuestionByUser(@PathVariable Long userId) {
         Iterable<Question> questions = questionService.findAllByUser_Id(userId);
         return new ResponseEntity<>(questions, HttpStatus.OK);
+    }
+    @PostMapping("hihi")
+    public ResponseEntity<?> haha(@RequestBody QuestionDTO questionDTO) {
+        Set<Answer> answerSet = questionDTO.getAnswers();
+        for (Answer item: answerSet) {
+            questionDTO.getQuestion().getAnswers().add(answerService.save(item));
+        }
+        return new ResponseEntity<>(questionService.save(questionDTO.getQuestion()), HttpStatus.CREATED);
     }
 }
