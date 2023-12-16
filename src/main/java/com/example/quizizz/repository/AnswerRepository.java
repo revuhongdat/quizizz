@@ -7,8 +7,4 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
-    Iterable<Answer> findAllByQuestion_Id (Long questionId);
-    void deleteAllByQuestion_Id (Long questionId);
-    @Transactional
-    void deleteByContent(String content);
 }
