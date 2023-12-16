@@ -26,17 +26,17 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     public Optional<Result> findById(Long id) {
-        return Optional.empty();
+        return resultRepository.findById(id);
     }
 
     @Override
     public Result save(Result result) {
-        return null;
+        return resultRepository.save(result);
     }
 
     @Override
     public void delete(Long id) {
-
+        resultRepository.deleteById(id);
     }
 
     @Override

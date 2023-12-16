@@ -36,4 +36,9 @@ public class ResultController {
         }
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
+    @PostMapping
+    public ResponseEntity<?> createResult(@RequestBody Result result) {
+        return new ResponseEntity<>(resultService.save(result), HttpStatus.CREATED);
+    }
+
 }
