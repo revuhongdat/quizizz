@@ -12,6 +12,7 @@ import java.util.Optional;
 public class AnswerServiceImpl implements AnswerService {
     @Autowired
     AnswerRepository answerRepository;
+
     @Override
     public Iterable<Answer> findAll() {
         return answerRepository.findAll();
@@ -19,32 +20,16 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     public Optional<Answer> findById(Long id) {
-        return answerRepository.findById(id);
+        return Optional.empty();
     }
 
     @Override
     public Answer save(Answer answer) {
-        return answerRepository.save(answer);
+        return null;
     }
 
     @Override
     public void delete(Long id) {
-        answerRepository.deleteById(id);
-    }
 
-    @Override
-    public Iterable<Answer> findAllByQuestion_Id(Long questionId) {
-        return answerRepository.findAllByQuestion_Id(questionId);
-    }
-
-    @Override
-    @Transactional
-    public void deleteAllByQuestion_Id(Long questionId) {
-        answerRepository.deleteAllByQuestion_Id(questionId);
-    }
-
-    @Override
-    public void deleteByContent(String content) {
-        answerRepository.deleteByContent(content);
     }
 }
