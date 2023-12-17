@@ -38,4 +38,10 @@ public class AnswerServiceImpl implements AnswerService {
     public void delete(Long id) {
         answerRepository.deleteById(id);
     }
+
+
+    @Override
+    public void deleteByContent(String content) {
+        answerRepository.deleteByContent(content);
+    }
 }

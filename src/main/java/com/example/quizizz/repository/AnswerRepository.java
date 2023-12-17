@@ -7,4 +7,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
+    void deleteByContent(String content);
 }

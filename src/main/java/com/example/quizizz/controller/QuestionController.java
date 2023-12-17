@@ -3,6 +3,7 @@ package com.example.quizizz.controller;
 import com.example.quizizz.DTO.QuestionDTO;
 import com.example.quizizz.model.Answer;
 import com.example.quizizz.model.Question;
+import com.example.quizizz.model.Quiz;
 import com.example.quizizz.model.User;
 import com.example.quizizz.service.AnswerService;
 import com.example.quizizz.service.QuestionService;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -48,38 +50,41 @@ public class QuestionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateQuestion(@PathVariable Long id, Question question) {
+    public ResponseEntity<?> updateQuestion(@PathVariable Long id,@RequestBody QuestionDTO questionDTO) {
         Optional<Question> questionById = questionService.findById(id);
         if (questionById.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            question.setCategoryQuestion(question.getCategoryQuestion() == null ? questionById.get().getCategoryQuestion() : question.getCategoryQuestion());
-            question.setTypeQuestion(question.getTypeQuestion() == null ? questionById.get().getTypeQuestion() : question.getTypeQuestion());
-            question.setLevelQuestion(question.getLevelQuestion() == null ? questionById.get().getLevelQuestion() : question.getLevelQuestion());
-            question.setContent(question.getContent() == null ? questionById.get().getContent() : question.getContent());
-            Question updateQuestion = questionService.save(questionById.get());
-            return new ResponseEntity<>(updateQuestion, HttpStatus.OK);
         }
+        Question question = questionDTO.getQuestion();
+        question.setId(id);
+        Set<Answer> answerSet = questionDTO.getAnswers();
+        for (Answer item : answerSet) {
+            answerService.save(item);
+        }
+        return new ResponseEntity<>(questionService.save(question), HttpStatus.OK);
+
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Question> deleteQuestion(@PathVariable Long id) {
-        // Check if the user is authenticated
-        User currentUser = userService.getCurrentUser();
-        if (currentUser == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // Or handle as per your authentication logic
-        }
-
-        Optional<Question> questionOptional = this.questionService.findById(id);
+        Optional<Question> questionOptional = questionService.findById(id);
         if (questionOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-        if (Objects.equals(currentUser.getId(), questionOptional.get().getUser().getId())) {
-                questionService.delete(id);
-                return new ResponseEntity<>(HttpStatus.OK);
+        Set<Answer> answers = questionOptional.get().getAnswers();
+        Iterable<Quiz> quizzes = quizService.findAll();
+        for (Quiz quiz : quizzes) {
+            for (Question question : quiz.getQuestions()) {
+                if (question.getId().equals(questionOptional.get().getId())) {
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+            }
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        questionService.delete(id);
+        for (Answer answer : answers) {
+            answerService.delete(answer.getId());
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/category/{categoryId}")
@@ -93,20 +98,23 @@ public class QuestionController {
         Iterable<Question> questions = questionService.findAllByQuizId(quizId);
         return new ResponseEntity<>(questions, HttpStatus.OK);
     }
+
     @GetMapping("/content/{content}")
     public ResponseEntity<Iterable<Question>> findByQuiz(@PathVariable String content) {
         Iterable<Question> questions = questionService.findAllByContentContains(content);
         return new ResponseEntity<>(questions, HttpStatus.OK);
     }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<Iterable<Question>> findQuestionByUser(@PathVariable Long userId) {
         Iterable<Question> questions = questionService.findAllByUser_Id(userId);
         return new ResponseEntity<>(questions, HttpStatus.OK);
     }
+
     @PostMapping()
-    public ResponseEntity<?> haha(@RequestBody QuestionDTO questionDTO) {
+    public ResponseEntity<?> createQuestion(@RequestBody QuestionDTO questionDTO) {
         Set<Answer> answerSet = questionDTO.getAnswers();
-        for (Answer item: answerSet) {
+        for (Answer item : answerSet) {
             questionDTO.getQuestion().getAnswers().add(answerService.save(item));
         }
         return new ResponseEntity<>(questionService.save(questionDTO.getQuestion()), HttpStatus.CREATED);
