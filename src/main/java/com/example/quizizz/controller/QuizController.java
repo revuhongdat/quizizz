@@ -64,6 +64,7 @@ public class QuizController {
                     return new ResponseEntity<>("Trùng tên quiz", HttpStatus.BAD_REQUEST);
                 }
             }
+            quiz.setId(id);
             return new ResponseEntity<>(quizService.save(quiz), HttpStatus.OK);
         } else {
             return new ResponseEntity<>("K tìm thấy quiz", HttpStatus.NOT_FOUND);

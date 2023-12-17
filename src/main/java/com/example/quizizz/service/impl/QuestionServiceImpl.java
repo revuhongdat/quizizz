@@ -33,7 +33,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public void delete(Long id) {
-        questionRepository.deleteQuestionNotInQuiz(id);
+        questionRepository.deleteById(id);
     }
 
     @Override

@@ -36,6 +36,6 @@ public class Question {
     @JoinColumn(name = "id_user")
     private User user;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Answer> answers = new HashSet<>();
 }
