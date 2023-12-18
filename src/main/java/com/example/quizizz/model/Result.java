@@ -36,7 +36,7 @@ public class Result {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "id_quiz")
+    @JoinColumn (name = "id_quiz")
     private Quiz quiz;
 
     @ManyToOne
