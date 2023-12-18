@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -20,6 +21,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     void deleteQuestionNotInQuiz(@Param("id") Long id);
 
     Iterable<Question> findAllByContentContains(String content);
+    @Query(value = "SELECT * FROM question q WHERE q.id IN (SELECT qq.id_question FROM quiz_question qq WHERE qq.id_quiz = :id)", nativeQuery = true)
+    List<Question> findQuestionsByQuizId(@Param("id") Long id);
 
     Iterable<Question> findAllByUser_Id(Long id);
 }

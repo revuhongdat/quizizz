@@ -52,18 +52,21 @@ public class QuestionController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateQuestion(@PathVariable Long id,@RequestBody QuestionDTO questionDTO) {
+        Question question = questionDTO.getQuestion();
         Optional<Question> questionById = questionService.findById(id);
         if (questionById.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Question question = questionDTO.getQuestion();
-        question.setId(id);
+        questionById.get().setLevelQuestion(question.getLevelQuestion());
+        questionById.get().setTypeQuestion(question.getTypeQuestion());
+        questionById.get().setCategoryQuestion(question.getCategoryQuestion());
+        questionById.get().setContent(question.getContent());
+        questionById.get().setStatus(question.getStatus());
         Set<Answer> answerSet = questionDTO.getAnswers();
         for (Answer item : answerSet) {
             answerService.save(item);
         }
-        return new ResponseEntity<>(questionService.save(question), HttpStatus.OK);
-
+        return new ResponseEntity<>(questionService.save(questionById.get()), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
@@ -101,7 +104,7 @@ public class QuestionController {
     }
 
     @GetMapping("/content/{content}")
-    public ResponseEntity<Iterable<Question>> findByQuiz(@PathVariable String content) {
+    public ResponseEntity<Iterable<Question>> findByContent(@PathVariable String content) {
         Iterable<Question> questions = questionService.findAllByContentContains(content);
         return new ResponseEntity<>(questions, HttpStatus.OK);
     }
