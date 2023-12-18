@@ -48,9 +48,9 @@ public class ResultController {
     @GetMapping("/fbq/{id}")
     public ResponseEntity<?> findAllByQuizId(@PathVariable Long id) {
         List<Result> results = (List<Result>) resultService.findAllByQuizId(id);
-        if (results.isEmpty()) {
-            return new ResponseEntity<>("Không có", HttpStatus.NOT_FOUND);
-        }
+//        if (results.isEmpty()) {
+//            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
+//        }
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
 
