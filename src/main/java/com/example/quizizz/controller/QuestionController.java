@@ -10,6 +10,7 @@ import com.example.quizizz.service.QuestionService;
 import com.example.quizizz.service.QuizService;
 import com.example.quizizz.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
@@ -118,5 +119,10 @@ public class QuestionController {
             questionDTO.getQuestion().getAnswers().add(answerService.save(item));
         }
         return new ResponseEntity<>(questionService.save(questionDTO.getQuestion()), HttpStatus.CREATED);
+    }
+    @GetMapping("/fba/{idAnswer}")
+    public ResponseEntity<?> findQuestionByAnswerId(@PathVariable Long idAnswer) {
+        Optional<Question> questionOptional = answerService.findQuestionByAnswerId(idAnswer);
+        return new ResponseEntity<>(questionOptional, HttpStatus.OK);
     }
 }

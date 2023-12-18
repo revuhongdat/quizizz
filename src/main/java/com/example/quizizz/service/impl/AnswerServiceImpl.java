@@ -1,6 +1,7 @@
 package com.example.quizizz.service.impl;
 
 import com.example.quizizz.model.Answer;
+import com.example.quizizz.model.Question;
 import com.example.quizizz.repository.AnswerRepository;
 import com.example.quizizz.service.AnswerService;
 import jakarta.transaction.Transactional;
@@ -43,5 +44,10 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public void deleteByContent(String content) {
         answerRepository.deleteByContent(content);
+    }
+
+    @Override
+    public Optional<Question> findQuestionByAnswerId(Long id) {
+        return answerRepository.findQuestionByAnswerId(id);
     }
 }
