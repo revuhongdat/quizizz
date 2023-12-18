@@ -48,8 +48,9 @@ public class ResultServiceImpl implements ResultService {
         return resultRepository.findAllByQuizId(id);
     }
 
+
     @Override
-    public Result findAllByUserIdAndQuizIdNewest(Long idUser, Long idQuiz) {
+    public Iterable<Result> findAllByUserIdAndQuizId(Long idUser, Long idQuiz) {
         Iterable<Result> results = resultRepository.findAllByUserIdAndQuizId(idUser, idQuiz);
         // Chuyển Iterable thành List
         List<Result> resultList = new ArrayList<>();
@@ -58,11 +59,17 @@ public class ResultServiceImpl implements ResultService {
         List<Result> sortedResults = resultList.stream()
                 .sorted(Comparator.comparing(Result::getId).reversed())
                 .toList();
-        return sortedResults.get(0);
+        return sortedResults;
     }
 
     @Override
     public Iterable<Result> findAllByUserId(Long idUser) {
         return resultRepository.findAllByUserId(idUser);
+    }
+
+    @Override
+    public Result findByUserIdAndQuizIdAndNewest(Long idUser, Long idQuiz) {
+        List<Result> sortedResults = (List<Result>) findAllByUserIdAndQuizId(idUser, idQuiz);
+        return sortedResults.get(0);
     }
 }

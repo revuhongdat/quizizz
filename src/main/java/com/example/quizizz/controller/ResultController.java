@@ -110,8 +110,8 @@ public class ResultController {
         return new ResponseEntity<>(resultService.save(result), HttpStatus.CREATED);
     }
     @GetMapping("/fbuaqan")
-    public ResponseEntity<?> findAllByUserIdAndQuizIdNewest(@RequestParam(name = "idUser") Long idUser, @RequestParam(name = "idQuiz") Long idQuiz) {
-        return new ResponseEntity<>(resultService.findAllByUserIdAndQuizIdNewest(idUser, idQuiz), HttpStatus.OK);
+    public ResponseEntity<?> findByUserIdAndQuizIdNewest(@RequestParam(name = "idUser") Long idUser, @RequestParam(name = "idQuiz") Long idQuiz) {
+        return new ResponseEntity<>(resultService.findByUserIdAndQuizIdAndNewest(idUser, idQuiz), HttpStatus.OK);
     }
     @GetMapping("/fbu/{idUser}")
     public ResponseEntity<?> findAllByUserId(@PathVariable Long idUser) {
@@ -120,5 +120,9 @@ public class ResultController {
             return new ResponseEntity<>("Không có", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(results, HttpStatus.OK);
+    }
+    @GetMapping("/fbuaq")
+    public ResponseEntity<?> findAllByUserIdAndQuizId(@RequestParam(name = "idUser") Long idUser, @RequestParam(name = "idQuiz") Long idQuiz) {
+        return new ResponseEntity<>(resultService.findAllByUserIdAndQuizId(idUser, idQuiz), HttpStatus.OK);
     }
 }
