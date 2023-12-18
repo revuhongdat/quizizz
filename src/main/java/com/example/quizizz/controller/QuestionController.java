@@ -52,19 +52,21 @@ public class QuestionController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateQuestion(@PathVariable Long id,@RequestBody QuestionDTO questionDTO) {
+        Question question = questionDTO.getQuestion();
         Optional<Question> questionById = questionService.findById(id);
         if (questionById.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Question question = questionDTO.getQuestion();
-        question.setId(id);
+        questionById.get().setLevelQuestion(question.getLevelQuestion());
+        questionById.get().setTypeQuestion(question.getTypeQuestion());
+        questionById.get().setCategoryQuestion(question.getCategoryQuestion());
+        questionById.get().setContent(question.getContent());
+        questionById.get().setStatus(question.getStatus());
         Set<Answer> answerSet = questionDTO.getAnswers();
-        question.setAnswers(answerSet);
         for (Answer item : answerSet) {
             answerService.save(item);
         }
-        return new ResponseEntity<>(questionService.save(question), HttpStatus.OK);
-
+        return new ResponseEntity<>(questionService.save(questionById.get()), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
