@@ -43,7 +43,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Iterable<Question> findAllByQuizId(Long quizId) {
-        return questionRepository.findAll();
+        return questionRepository.findQuestionsByQuizId(quizId);
     }
 
     @Override

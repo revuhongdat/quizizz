@@ -104,7 +104,7 @@ public class QuestionController {
     }
 
     @GetMapping("/content/{content}")
-    public ResponseEntity<Iterable<Question>> findByQuiz(@PathVariable String content) {
+    public ResponseEntity<Iterable<Question>> findByContent(@PathVariable String content) {
         Iterable<Question> questions = questionService.findAllByContentContains(content);
         return new ResponseEntity<>(questions, HttpStatus.OK);
     }
