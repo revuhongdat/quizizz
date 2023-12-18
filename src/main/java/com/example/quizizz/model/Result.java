@@ -21,9 +21,9 @@ public class Result {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int totalScore;
+    private double totalScore;
 
-    private int numberTrue;
+    private double numberTrue;
 
     @CreationTimestamp
     private LocalDateTime startTime;
