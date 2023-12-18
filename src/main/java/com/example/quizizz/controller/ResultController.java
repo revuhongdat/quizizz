@@ -53,116 +53,60 @@ public class ResultController {
         }
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
-    @PostMapping("/hung")
+
+    @PostMapping()
     public ResponseEntity<?> createResultV2(@RequestBody Result result) {
-        Set<Answer> answers = result.getAnswers();
+        Set<Answer> answerSet = result.getAnswers();
+        Set<Answer> answers = new HashSet<>();
+        for (Answer answer: answerSet) {
+            answers.add(answerService.findById(answer.getId()).get());
+        }
         Optional<Quiz> quiz = quizService.findById(result.getQuiz().getId());
         Set<Question> questions = quiz.get().getQuestions();
-        double count = 0;
         double numberTrue = 0;
-        double totalScore = 0;
-        double totalAnswerTure = 0;
-        double avg = 0.0;
-        for (Question question1 : questions){
+        for (Question question1 : questions) {
+            double avg = 0;
+            double numberTrueTypeMulti = 0;
+            double numberTrueTypeOne = 0;
+            double numberTrue1 = 0;
             if (question1.getTypeQuestion().getId() == 3) {
+                double totalAnswerTure = 0;
                 for (Answer answer2 : question1.getAnswers()) {
-                    int numberAnswer = question1.getAnswers().size();
                     if (answer2.getStatus() == 1) {
                         totalAnswerTure += 1;
                     }
-                    avg = totalAnswerTure / numberAnswer;
+                    avg = 1 / totalAnswerTure;
                 }
-            }
-        }
-        for (Answer chooseAnswer : answers) {
-            Optional<Answer> answer1 = answerService.findById(chooseAnswer.getId());
-            if (answer1.get().getStatus() == 1) {
-                for (Question question : questions) {
-                    for (Answer answer : question.getAnswers()) {
-                        if (answer.getId().equals(answer1.get().getId())) {
-                            if (1 == question.getTypeQuestion().getId() || 2 == question.getTypeQuestion().getId()) {
-                                numberTrue += 1;
+
+               loop: for (Answer answer : answers) {
+                    for (Answer answer2 : question1.getAnswers()) {
+                        if (answer.getId().equals(answer2.getId())) {
+                            if (answer.getStatus() == 1) {
+                                numberTrue1 += avg;
                             } else {
-                                outerLoop:
-                                for (Answer answer2 : question.getAnswers()) {
-                                    if (answer1.get().getId() == answer2.getId()) {
-                                        count += avg;
-                                    }
-                                }
+                                numberTrue1 = 0;
+                                break loop;
                             }
                         }
 
                     }
                 }
-            }else {
-                count -= avg;
-                if (count < 0){
-                    count = 0;
-                }
+                numberTrueTypeMulti += numberTrue1;
             }
-        }
-        numberTrue += count;
-        totalScore = (double) ((Math.ceil((double) 100 / questions.size())) * numberTrue);
-        result.setNumberTrue(numberTrue);
-        result.setTotalScore(totalScore);
-       return new ResponseEntity<>(resultService.save(result), HttpStatus.CREATED);
-    }
-}
-      
-    @PostMapping
-    public ResponseEntity<?> createResult(@RequestBody Result result) {
-        Set<Answer> answerSet = result.getAnswers();
-        Set<Answer> answers = new HashSet<>();
-        for (Answer answer : answerSet) {
-            answers.add(answerService.findById(answer.getId()).get());
-        }
-        result.setAnswers(answers);
-        result.setQuiz(quizService.findById(result.getQuiz().getId()).get());
-        Set<Question> questions = result.getQuiz().getQuestions();
-        int numberTrue = 0;
-        int totalScore = 0;
-        for (Question question: questions) {
-            Set<Answer> answerSet1 = question.getAnswers();
-            if (question.getTypeQuestion().getId() == 1 || question.getTypeQuestion().getId() == 2) {
+            if (question1.getTypeQuestion().getId() == 1 || question1.getTypeQuestion().getId() == 2) {
                 for (Answer answer: answers) {
-                    for (Answer answer1: answerSet1) {
-                        if (answer.getId().equals(answer1.getId()) && answer.getStatus() == 1) {
-                            numberTrue += 1;
-                            break;
+                    for (Answer answer1: question1.getAnswers()) {
+                        if (answer.getStatus() == 1 && answer.getId().equals(answer1.getId())) {
+                            numberTrueTypeOne += 1;
                         }
                     }
                 }
-            } else {
-                List<Answer> listAnswerTrue = new ArrayList<>();
-                for (Answer answer: answerSet1) {
-                    if (answer.getStatus() == 1) {
-                        listAnswerTrue.add(answer);
-                    }
-                }
-                int numberAnswerTrue = listAnswerTrue.size();
-                int numberAnswer = 0;
-                for (Answer answer: answers) {
-                    if (question.getId().equals(answerService.findQuestionByAnswerId(answer.getId()).get().getId())) {
-                        numberAnswer += 1;
-                    }
-                }
-                if (numberAnswer == numberAnswerTrue) {
-                    for (Answer answer: answers) {
-                        for (Answer answer2: listAnswerTrue) {
-                            if (answer.getId().equals(answer2.getId())) {
-                                numberAnswer -= 1;
-                            }
-                        }
-                    }
-                }
-                if ( numberAnswer == 0) {
-                    numberTrue += 1;
-                }
             }
+             numberTrue += numberTrueTypeMulti + numberTrueTypeOne;
         }
-        result.setNumberTrue(numberTrue);
-        totalScore = numberTrue * 100 / questions.size();
+        double totalScore = numberTrue * 100 / questions.size();
         result.setTotalScore(totalScore);
+        result.setNumberTrue(numberTrue);
         return new ResponseEntity<>(resultService.save(result), HttpStatus.CREATED);
     }
 }
