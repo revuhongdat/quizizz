@@ -59,6 +59,7 @@ public class QuestionController {
         Question question = questionDTO.getQuestion();
         question.setId(id);
         Set<Answer> answerSet = questionDTO.getAnswers();
+        question.setAnswers(answerSet);
         for (Answer item : answerSet) {
             answerService.save(item);
         }
