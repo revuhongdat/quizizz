@@ -1,6 +1,8 @@
 package com.example.quizizz.controller;
 
 import com.example.quizizz.model.Answer;
+import com.example.quizizz.model.Question;
+import com.example.quizizz.service.QuestionService;
 import com.example.quizizz.service.impl.AnswerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
