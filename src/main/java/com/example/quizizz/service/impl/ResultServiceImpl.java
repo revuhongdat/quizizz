@@ -7,7 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ResultServiceImpl implements ResultService {
@@ -42,5 +46,23 @@ public class ResultServiceImpl implements ResultService {
     @Override
     public Iterable<Result> findAllByQuizId(Long id) {
         return resultRepository.findAllByQuizId(id);
+    }
+
+    @Override
+    public Result findAllByUserIdAndQuizIdNewest(Long idUser, Long idQuiz) {
+        Iterable<Result> results = resultRepository.findAllByUserIdAndQuizId(idUser, idQuiz);
+        // Chuyển Iterable thành List
+        List<Result> resultList = new ArrayList<>();
+        results.forEach(resultList::add);
+        // Sắp xếp danh sách
+        List<Result> sortedResults = resultList.stream()
+                .sorted(Comparator.comparing(Result::getId).reversed())
+                .toList();
+        return sortedResults.get(0);
+    }
+
+    @Override
+    public Iterable<Result> findAllByUserId(Long idUser) {
+        return resultRepository.findAllByUserId(idUser);
     }
 }
