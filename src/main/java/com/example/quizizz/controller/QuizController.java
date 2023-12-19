@@ -74,9 +74,9 @@ public class QuizController {
     @GetMapping("/fbu/{id}")
     public ResponseEntity<?> findAllByUser(@PathVariable Long id) {
         List<Quiz> quizzes = (List<Quiz>) quizService.findAllByUserId(id);
-        if (quizzes.isEmpty()) {
-            return new ResponseEntity<>("Không tìm thấy", HttpStatus.NOT_FOUND);
-        }
+//        if (quizzes.isEmpty()) {
+//            return new ResponseEntity<>("Không tìm thấy", HttpStatus.NOT_FOUND);
+//        }
         return new ResponseEntity<>(quizzes, HttpStatus.OK);
     }
     @GetMapping("/fbcq/{id}")
