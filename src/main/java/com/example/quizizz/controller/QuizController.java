@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -60,6 +61,9 @@ public class QuizController {
             }
             Iterable<Quiz> quizzes = quizService.findAll();
             for (Quiz q : quizzes) {
+                if (Objects.equals(q.getId(), quiz.getId())) {
+                    break;
+                }
                 if (q.getTitle().equals(quiz.getTitle())) {
                     return new ResponseEntity<>("Trùng tên quiz", HttpStatus.BAD_REQUEST);
                 }
@@ -74,9 +78,9 @@ public class QuizController {
     @GetMapping("/fbu/{id}")
     public ResponseEntity<?> findAllByUser(@PathVariable Long id) {
         List<Quiz> quizzes = (List<Quiz>) quizService.findAllByUserId(id);
-        if (quizzes.isEmpty()) {
-            return new ResponseEntity<>("Không tìm thấy", HttpStatus.NOT_FOUND);
-        }
+//        if (quizzes.isEmpty()) {
+//            return new ResponseEntity<>("Không tìm thấy", HttpStatus.NOT_FOUND);
+//        }
         return new ResponseEntity<>(quizzes, HttpStatus.OK);
     }
     @GetMapping("/fbcq/{id}")
