@@ -37,6 +37,8 @@ public class Quiz {
     @Column(nullable = false)
     private int status;
 
+    private String image;
+
     @ManyToOne
     @JoinColumn(name = "id_category_quiz")
     private CategoryQuiz categoryQuiz;
