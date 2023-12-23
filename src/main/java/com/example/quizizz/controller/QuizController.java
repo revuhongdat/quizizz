@@ -79,6 +79,7 @@ public class QuizController {
             quiz1.get().setStatus(quiz.getStatus());
             quiz1.get().setCategoryQuiz(quiz.getCategoryQuiz());
             quiz1.get().setLevelQuiz(quiz.getLevelQuiz());
+            quiz1.get().setImage(quiz.getImage());
             quiz1.get().setUser(quiz.getUser());
             quizService.save(quiz1.get());
             quiz1.get().setQuestions(quiz.getQuestions());
