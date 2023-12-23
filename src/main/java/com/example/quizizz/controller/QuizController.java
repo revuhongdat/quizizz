@@ -55,7 +55,7 @@ public class QuizController {
         if (quizOptional.isPresent()) {
             Iterable<Result> results = resultService.findAll();
             for (Result result : results) {
-                if (result.getUser().getId().equals(quizOptional.get().getId())) {
+                if (result.getQuiz().getId().equals(quizOptional.get().getId())) {
                     return new ResponseEntity<>("Bài thi đã có người làm", HttpStatus.BAD_REQUEST);
                 }
             }
@@ -69,7 +69,21 @@ public class QuizController {
                 }
             }
             quiz.setId(id);
-            return new ResponseEntity<>(quizService.save(quiz), HttpStatus.OK);
+            Optional<Quiz> quiz1 = Optional.of(new Quiz());
+            quiz1.get().setId(id);
+            quiz1.get().setTitle(quiz.getTitle());
+            quiz1.get().setTime(quiz.getTime());
+            quiz1.get().setTimeCreate(quiz.getTimeCreate());
+            quiz1.get().setDescription(quiz.getDescription());
+            quiz1.get().setPassScore(quiz.getPassScore());
+            quiz1.get().setStatus(quiz.getStatus());
+            quiz1.get().setCategoryQuiz(quiz.getCategoryQuiz());
+            quiz1.get().setLevelQuiz(quiz.getLevelQuiz());
+            quiz1.get().setImage(quiz.getImage());
+            quiz1.get().setUser(quiz.getUser());
+            quizService.save(quiz1.get());
+            quiz1.get().setQuestions(quiz.getQuestions());
+            return new ResponseEntity<>(quizService.save(quiz1.get()), HttpStatus.OK);
         } else {
             return new ResponseEntity<>("K tìm thấy quiz", HttpStatus.NOT_FOUND);
         }
