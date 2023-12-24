@@ -14,6 +14,7 @@ public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(columnDefinition = "text")
     private String content;
     private String img;
     private int status;

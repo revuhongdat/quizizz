@@ -47,7 +47,7 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
                     "    WHERE q2.id_category_quiz = cq.id " +
                     "    GROUP BY q2.id " +
                     "    ORDER BY COUNT(r2.id) DESC " +
-                    "    LIMIT 1 " +
+                    "    LIMIT 10 " +
                     ")", nativeQuery = true)
     List<Quiz> findQuizWithMostResultsInEachCategory();
     Iterable<Quiz> findAllByTitleContaining(String name);
