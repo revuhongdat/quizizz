@@ -125,4 +125,9 @@ public class ResultController {
     public ResponseEntity<?> findAllByUserIdAndQuizId(@RequestParam(name = "idUser") Long idUser, @RequestParam(name = "idQuiz") Long idQuiz) {
         return new ResponseEntity<>(resultService.findAllByUserIdAndQuizId(idUser, idQuiz), HttpStatus.OK);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findById(@PathVariable Long id) {
+        return new ResponseEntity<>(resultService.findById(id), HttpStatus.OK);
+    }
 }
