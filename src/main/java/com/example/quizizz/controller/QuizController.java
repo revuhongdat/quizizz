@@ -97,6 +97,7 @@ public class QuizController {
 //        }
         return new ResponseEntity<>(quizzes, HttpStatus.OK);
     }
+
     @GetMapping("/fbcq/{id}")
     public ResponseEntity<?> findAllByCategoryQuizMostResult(@PathVariable Long id) {
         List<Quiz> quizzes = quizService.findAllByCategoryQuizMostResult(id);
@@ -105,6 +106,7 @@ public class QuizController {
         }
         return new ResponseEntity<>(quizzes, HttpStatus.OK);
     }
+
     @GetMapping("/hot")
     public ResponseEntity<?> findHotQuizEachCategoryQuiz() {
         List<Quiz> quizzes = quizService.findQuizWithMostResultsInEachCategory();
@@ -113,6 +115,7 @@ public class QuizController {
         }
         return new ResponseEntity<>(quizzes, HttpStatus.OK);
     }
+
     @GetMapping("/fbn/{name}")
     public ResponseEntity<?> findAllByTitleContaining(@PathVariable String name) {
         List<Quiz> quizzes = (List<Quiz>) quizService.findAllByTitleContaining(name);
@@ -120,5 +123,15 @@ public class QuizController {
             return new ResponseEntity<>("Không tìm thấy", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(quizzes, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteQuiz(@PathVariable Long id) {
+        Optional<Quiz> quiz = quizService.findById(id);
+        if (quiz.isEmpty()) {
+            return new ResponseEntity<>("Không tìm thấy", HttpStatus.NOT_FOUND);
+        }
+        quizService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
